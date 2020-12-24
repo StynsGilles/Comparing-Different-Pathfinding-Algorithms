@@ -316,16 +316,6 @@
     <ClCompile Include="projects\App_PathfindingAStar\App_PathfindingAStar.cpp" />
     <ClCompile Include="projects\App_Sandbox\App_Sandbox.cpp" />
     <ClCompile Include="projects\App_Sandbox\SandboxAgent.cpp" />
-    <ClCompile Include="projects\App_Steering\Behaviors\App_SteeringBehaviors.cpp" />
-    <ClCompile Include="projects\App_Steering\CombinedBehaviors\App_CombinedSteering.cpp" />
-    <ClCompile Include="projects\App_Steering\CombinedBehaviors\App_Flocking.cpp" />
-    <ClCompile Include="projects\App_Steering\CombinedBehaviors\CombinedSteeringBehaviors.cpp" />
-    <ClCompile Include="projects\App_Steering\CombinedBehaviors\FlockingSteeringBehaviors.cpp" />
-    <ClCompile Include="projects\App_Steering\CombinedBehaviors\SpacePartitioning.cpp" />
-    <ClCompile Include="projects\App_Steering\CombinedBehaviors\TheFlock.cpp" />
-    <ClCompile Include="projects\App_Steering\Obstacle.cpp" />
-    <ClCompile Include="projects\App_Steering\SteeringAgent.cpp" />
-    <ClCompile Include="projects\App_Steering\SteeringBehaviors.cpp" />
     <ClCompile Include="projects\Shared\BaseAgent.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -400,17 +390,6 @@
     <ClInclude Include="projects\App_Sandbox\App_Sandbox.h" />
     <ClInclude Include="projects\App_Sandbox\SandboxAgent.h" />
     <ClInclude Include="projects\App_Selector.h" />
-    <ClInclude Include="projects\App_Steering\Behaviors\App_SteeringBehaviors.h" />
-    <ClInclude Include="projects\App_Steering\CombinedBehaviors\App_CombinedSteering.h" />
-    <ClInclude Include="projects\App_Steering\CombinedBehaviors\App_Flocking.h" />
-    <ClInclude Include="projects\App_Steering\CombinedBehaviors\CombinedSteeringBehaviors.h" />
-    <ClInclude Include="projects\App_Steering\CombinedBehaviors\FlockingSteeringBehaviors.h" />
-    <ClInclude Include="projects\App_Steering\CombinedBehaviors\SpacePartitioning.h" />
-    <ClInclude Include="projects\App_Steering\CombinedBehaviors\TheFlock.h" />
-    <ClInclude Include="projects\App_Steering\Obstacle.h" />
-    <ClInclude Include="projects\App_Steering\SteeringAgent.h" />
-    <ClInclude Include="projects\App_Steering\SteeringBehaviors.h" />
-    <ClInclude Include="projects\App_Steering\SteeringHelpers.h" />
     <ClInclude Include="projects\Shared\BaseAgent.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
