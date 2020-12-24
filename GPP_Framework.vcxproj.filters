@@ -6,7 +6,6 @@
     <ClCompile Include="framework\EliteGeometry\EGeometry2DTypes.cpp" />
     <ClCompile Include="framework\ElitePhysics\Box2DIntegration\ERigidBodyBox2D.cpp" />
     <ClCompile Include="framework\ElitePhysics\Box2DIntegration\EPhysicsWorldBox2D.cpp" />
-    <ClCompile Include="projects\Shared\BaseAgent.cpp" />
     <ClCompile Include="framework\EliteWindow\SDLWindow\SDLWindow.cpp" />
     <ClCompile Include="framework\EliteTimer\SDLTimer\ETimer_SDL.cpp" />
     <ClCompile Include="framework\EliteInput\EInputManager.cpp" />
@@ -15,15 +14,12 @@
     <ClCompile Include="framework\EliteRendering\SDLIntegration\SDLHelpers\gl3w.c" />
     <ClCompile Include="framework\EliteRendering\SDLIntegration\SDLDebugRenderer2D\SDLDebugRenderer2D.cpp" />
     <ClCompile Include="framework\EliteUI\EImmediateUI.cpp" />
-    <ClCompile Include="projects\App_Sandbox\SandboxAgent.cpp" />
-    <ClCompile Include="projects\App_Sandbox\App_Sandbox.cpp" />
     <ClCompile Include="framework\EliteMath\EMatrix2x3.cpp" />
     <ClCompile Include="framework\EliteAI\EliteGraphs\EGraphConnectionTypes.cpp" />
     <ClCompile Include="framework\EliteAI\EliteGraphs\EGraphNodeTypes.cpp" />
     <ClCompile Include="projects\App_PathfindingAStar\App_PathfindingAStar.cpp" />
     <ClCompile Include="framework\EliteAI\EliteGraphs\EliteGraphUtilities\EGraphEditor.cpp" />
     <ClCompile Include="framework\EliteAI\EliteGraphs\EliteGraphUtilities\EGraphRenderer.cpp" />
-    <ClCompile Include="projects\App_GraphTheory\App_GraphTheory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="projects\App_Selector.h" />
@@ -49,7 +45,6 @@
     <ClInclude Include="framework\ElitePhysics\EPhysicsShapes.h" />
     <ClInclude Include="framework\EliteWindow\EWindowBase.h" />
     <ClInclude Include="framework\EliteWindow\EWindow.h" />
-    <ClInclude Include="projects\Shared\BaseAgent.h" />
     <ClInclude Include="framework\EliteWindow\SDLWindow\SDLWindow.h" />
     <ClInclude Include="framework\EliteInput\EInputManager.h" />
     <ClInclude Include="framework\EliteTimer\ETimer.h" />
@@ -70,8 +65,6 @@
     <ClInclude Include="framework\ElitePhysics\Box2DIntegration\Box2DRenderer.h" />
     <ClInclude Include="framework\EliteHelpers\EMulticastDelegate.h" />
     <ClInclude Include="framework\EliteUI\EImmediateUI.h" />
-    <ClInclude Include="projects\App_Sandbox\SandboxAgent.h" />
-    <ClInclude Include="projects\App_Sandbox\App_Sandbox.h" />
     <ClInclude Include="framework\EliteRendering\Shaders.h" />
     <ClInclude Include="framework\EliteInput\EInputData.h" />
     <ClInclude Include="framework\EliteMath\EMatrix2x3.h" />
@@ -90,7 +83,6 @@
     <ClInclude Include="framework\EliteAI\EliteGraphs\EliteGraphUtilities\EGraphVisuals.h" />
     <ClInclude Include="framework\EliteAI\EliteNavigation\EHeuristicFunctions.h" />
     <ClInclude Include="framework\EliteAI\EliteNavigation\ENavigation.h" />
-    <ClInclude Include="projects\App_GraphTheory\App_GraphTheory.h" />
     <ClInclude Include="framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EJPS.h" />
     <ClInclude Include="framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EGraphAlgorithm.h" />
   </ItemGroup>

@@ -9,21 +9,6 @@
 #include "projects/App_Selector.h"
 
 //---------- Registered Applications -----------
-#ifdef Sandbox
-	#include "projects/App_Sandbox/App_Sandbox.h"
-#endif
-#ifdef Steering
-	#include "projects\App_Steering\Behaviors\App_SteeringBehaviors.h"
-#endif // Steering
-#ifdef CombinedSteering
-	#include "projects/App_Steering/CombinedBehaviors/App_CombinedSteering.h"
-#endif // CombinedSteering
-#ifdef TheFlock
-	#include "projects/App_Steering/CombinedBehaviors/App_Flocking.h"
-#endif //TheFlock
-#ifdef GraphTheory
-	#include"projects/App_GraphTheory/App_GraphTheory.h"
-#endif // GraphTheory
 #ifdef AStar
 	#include "projects/App_PathfindingAStar/App_PathfindingAStar.h"
 #endif // AStar
@@ -80,21 +65,6 @@ int main(int argc, char* argv[])
 		//Application Creation
 		IApp* myApp = nullptr;
 
-#ifdef Sandbox
-		myApp = new App_Sandbox();
-#endif
-#ifdef Steering
-		myApp = new App_SteeringBehaviors();
-#endif // Steering
-#ifdef CombinedSteering
-		myApp = new App_CombinedSteering();
-#endif // CombinedSteering
-#ifdef TheFlock
-		myApp = new App_Flocking();
-#endif // TheFlock
-#ifdef GraphTheory
-		myApp = new App_GraphTheory();
-#endif // GraphTheory
 #ifdef AStar
 		myApp = new App_PathfindingAStar();
 #endif // AStar
