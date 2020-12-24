@@ -10,7 +10,7 @@
 
 //---------- Registered Applications -----------
 #ifdef AStar
-	#include "projects/App_PathfindingAStar/App_PathfindingAStar.h"
+	#include "projects/App_Pathfinding/App_Pathfinding.h"
 #endif // AStar
 
 
@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
 		IApp* myApp = nullptr;
 
 #ifdef AStar
-		myApp = new App_PathfindingAStar();
+		myApp = new App_Pathfinding();
 #endif // AStar
 
 

@@ -19,12 +19,12 @@
 //	JPS = 3
 //};
 
-class App_PathfindingAStar final : public IApp
+class App_Pathfinding final : public IApp
 {
 public:
 	//Constructor & Destructor
-	App_PathfindingAStar() = default;
-	virtual ~App_PathfindingAStar();
+	App_Pathfinding() = default;
+	virtual ~App_Pathfinding();
 
 	//App Functions
 	void Start() override;
@@ -69,7 +69,7 @@ private:
 	void UpdateImGui();
 
 	//C++ make the class non-copyable
-	App_PathfindingAStar(const App_PathfindingAStar&) = delete;
-	App_PathfindingAStar& operator=(const App_PathfindingAStar&) = delete;
+	App_Pathfinding(const App_Pathfinding&) = delete;
+	App_Pathfinding& operator=(const App_Pathfinding&) = delete;
 };
 #endif

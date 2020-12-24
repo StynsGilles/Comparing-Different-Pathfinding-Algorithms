@@ -2,7 +2,7 @@
 #include "stdafx.h"
 
 //Includes
-#include "App_PathfindingAStar.h"
+#include "App_Pathfinding.h"
 #include "framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EAstar.h"
 #include "framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EBFS.h"
 #include "framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EJPS.h"
@@ -11,13 +11,13 @@
 using namespace Elite;
 
 //Destructor
-App_PathfindingAStar::~App_PathfindingAStar()
+App_Pathfinding::~App_Pathfinding()
 {
 	SAFE_DELETE(m_pGridGraph);
 }
 
 //Functions
-void App_PathfindingAStar::Start()
+void App_Pathfinding::Start()
 {
 	//Set Camera
 	DEBUGRENDERER2D->GetActiveCamera()->SetZoom(39.0f);
@@ -32,7 +32,7 @@ void App_PathfindingAStar::Start()
 	endPathIdx = 4;
 }
 
-void App_PathfindingAStar::Update(float deltaTime)
+void App_Pathfinding::Update(float deltaTime)
 {
 	UNREFERENCED_PARAMETER(deltaTime);
 
@@ -108,7 +108,7 @@ void App_PathfindingAStar::Update(float deltaTime)
 	}
 }
 
-void App_PathfindingAStar::Render(float deltaTime) const
+void App_Pathfinding::Render(float deltaTime) const
 {
 	UNREFERENCED_PARAMETER(deltaTime);
 	//Render grid
@@ -140,7 +140,7 @@ void App_PathfindingAStar::Render(float deltaTime) const
 	
 }
 
-void App_PathfindingAStar::MakeGridGraph()
+void App_Pathfinding::MakeGridGraph()
 {
 	m_pGridGraph = new GridGraph<GridTerrainNode, GraphConnection>(
 		COLUMNS, 
@@ -154,7 +154,7 @@ void App_PathfindingAStar::MakeGridGraph()
 	//m_pGridGraph->GetNode(7)->SetTerrainType(TerrainType::Mud);
 }
 
-void App_PathfindingAStar::UpdateImGui()
+void App_Pathfinding::UpdateImGui()
 {
 #ifdef PLATFORM_WINDOWS
 #pragma region UI
