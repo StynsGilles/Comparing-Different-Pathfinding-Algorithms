@@ -1,21 +1,21 @@
 #pragma once
+#include "EGraphAlgorithm.h"
 
 namespace Elite 
 {
 	template <class T_NodeType, class T_ConnectionType>
-	class BFS
+	class BFS : public GraphAlgorithm<T_NodeType, T_ConnectionType>
 	{
 	public:
-		BFS(IGraph<T_NodeType, T_ConnectionType>* pGraph);
+		BFS(IGraph<T_NodeType, T_ConnectionType>* pGraph, Heuristic hFunction);
 
-		std::vector<T_NodeType*> FindPath(T_NodeType* pStartNode, T_NodeType* pDestinationNode);
+		std::vector<T_NodeType*> FindPath(T_NodeType* pStartNode, T_NodeType* pDestinationNode) override;
 	private:
-		IGraph<T_NodeType, T_ConnectionType>* m_pGraph;
 	};
 
-	template <class T_NodeType, class T_ConnectionType>
-	BFS<T_NodeType, T_ConnectionType>::BFS(IGraph<T_NodeType, T_ConnectionType>* pGraph)
-		: m_pGraph(pGraph)
+	template<class T_NodeType, class T_ConnectionType>
+	inline BFS<T_NodeType, T_ConnectionType>::BFS(IGraph<T_NodeType, T_ConnectionType>* pGraph, Heuristic hFunction)
+		:GraphAlgorithm(pGraph, hFunction)
 	{
 	}
 

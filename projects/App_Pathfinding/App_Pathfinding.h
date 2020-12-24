@@ -12,11 +12,11 @@
 //-----------------------------------------------------------------
 // Application
 //-----------------------------------------------------------------
-//enum class SearchAlgorithmUsed
+//enum SearchAlgorithmUsed
 //{
-//	BSF = 1,
-//	AStar = 2,
-//	JPS = 3
+//	BSF,
+//	AStar,
+//	JPS
 //};
 
 class App_Pathfinding final : public IApp

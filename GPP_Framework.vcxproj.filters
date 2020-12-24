@@ -68,7 +68,6 @@
     <ClInclude Include="framework\EliteRendering\Shaders.h" />
     <ClInclude Include="framework\EliteInput\EInputData.h" />
     <ClInclude Include="framework\EliteMath\EMatrix2x3.h" />
-    <ClInclude Include="framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EEularianPath.h" />
     <ClInclude Include="framework\EliteAI\EliteGraphs\EGraph2D.h" />
     <ClInclude Include="framework\EliteAI\EliteGraphs\EGraphConnectionTypes.h" />
     <ClInclude Include="framework\EliteAI\EliteGraphs\EGraphEnums.h" />

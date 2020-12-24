@@ -75,8 +75,9 @@ void App_Pathfinding::Update(float deltaTime)
 		&& endPathIdx != invalid_node_index
 		&& startPathIdx != endPathIdx)
 	{
+		GraphAlgorithm<GridTerrainNode, GraphConnection> pathfinder;
+
 		//A* Pathfinding
-		auto pathfinder = AStar<GridTerrainNode, GraphConnection>(m_pGridGraph, m_pHeuristicFunction);
 
 		//switch (m_SearchAlgorithmUsed)
 		//{
