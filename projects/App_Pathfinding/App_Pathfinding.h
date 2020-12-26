@@ -12,12 +12,12 @@
 //-----------------------------------------------------------------
 // Application
 //-----------------------------------------------------------------
-//enum SearchAlgorithmUsed
-//{
-//	BSF,
-//	AStar,
-//	JPS
-//};
+enum class SearchAlgorithmUsed
+{
+	Breath,
+	Star,
+	JumpPoint
+};
 
 class App_Pathfinding final : public IApp
 {
@@ -43,13 +43,11 @@ private:
 	unsigned int m_SizeCell = 15;
 	Elite::GridGraph<Elite::GridTerrainNode, Elite::GraphConnection>* m_pGridGraph;
 
-
 	//Pathfinding datamembers
 	int startPathIdx = invalid_node_index;
 	int endPathIdx = invalid_node_index;
 	std::vector<Elite::GridTerrainNode*> m_vPath;
 	bool m_UpdatePath = true;
-	//SearchAlgorithmUsed  m_SearchAlgorithmUsed = SearchAlgorithmUsed::AStar;
 
 	//Editor and Visualisation
 	Elite::EGraphEditor m_GraphEditor{};
@@ -63,6 +61,8 @@ private:
 	bool m_StartSelected = true;
 	int m_SelectedHeuristic = 4;
 	Elite::Heuristic m_pHeuristicFunction = Elite::HeuristicFunctions::Chebyshev;
+	int m_SelectedAlgorithm = 1;
+	SearchAlgorithmUsed  m_SearchAlgorithmUsed = SearchAlgorithmUsed::Star;
 
 	//Functions
 	void MakeGridGraph();

@@ -1,21 +1,25 @@
 #pragma once
-#include "EGraphAlgorithm.h"
 
 namespace Elite 
 {
 	template <class T_NodeType, class T_ConnectionType>
-	class BFS : public GraphAlgorithm<T_NodeType, T_ConnectionType>
+	class BFS
 	{
 	public:
 		BFS(IGraph<T_NodeType, T_ConnectionType>* pGraph, Heuristic hFunction);
 
-		std::vector<T_NodeType*> FindPath(T_NodeType* pStartNode, T_NodeType* pDestinationNode) override;
+		std::vector<T_NodeType*> FindPath(T_NodeType* pStartNode, T_NodeType* pDestinationNode);
 	private:
+		float GetHeuristicCost(T_NodeType* pStartNode, T_NodeType* pEndNode) const;
+
+		IGraph<T_NodeType, T_ConnectionType>* m_pGraph;
+		Heuristic m_HeuristicFunction;
 	};
 
 	template<class T_NodeType, class T_ConnectionType>
 	inline BFS<T_NodeType, T_ConnectionType>::BFS(IGraph<T_NodeType, T_ConnectionType>* pGraph, Heuristic hFunction)
-		:GraphAlgorithm(pGraph, hFunction)
+		: m_pGraph{ pGraph }
+		, m_HeuristicFunction{ hFunction }
 	{
 	}
 
@@ -76,6 +80,12 @@ namespace Elite
 		std::reverse(path.begin(), path.end());
 
 		return path;
+	}
+	template<class T_NodeType, class T_ConnectionType>
+	inline float BFS<T_NodeType, T_ConnectionType>::GetHeuristicCost(T_NodeType* pStartNode, T_NodeType* pEndNode) const
+	{
+		Vector2 toDestination = m_pGraph->GetNodePos(pEndNode) - m_pGraph->GetNodePos(pStartNode);
+		return m_HeuristicFunction(abs(toDestination.x), abs(toDestination.y));
 	}
 }
 

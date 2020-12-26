@@ -82,7 +82,6 @@
     <ClInclude Include="framework\EliteAI\EliteNavigation\EHeuristicFunctions.h" />
     <ClInclude Include="framework\EliteAI\EliteNavigation\ENavigation.h" />
     <ClInclude Include="framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EJPS.h" />
-    <ClInclude Include="framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EGraphAlgorithm.h" />
     <ClInclude Include="projects\App_Pathfinding\App_Pathfinding.h" />
   </ItemGroup>
   <ItemGroup>

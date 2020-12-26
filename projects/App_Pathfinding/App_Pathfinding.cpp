@@ -6,7 +6,6 @@
 #include "framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EAstar.h"
 #include "framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EBFS.h"
 #include "framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EJPS.h"
-#include "framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EGraphAlgorithm.h"
 
 using namespace Elite;
 
@@ -75,34 +74,31 @@ void App_Pathfinding::Update(float deltaTime)
 		&& endPathIdx != invalid_node_index
 		&& startPathIdx != endPathIdx)
 	{
-		GraphAlgorithm<GridTerrainNode, GraphConnection> pathfinder;
-
-		//A* Pathfinding
-
-		//switch (m_SearchAlgorithmUsed)
-		//{
-		//case SearchAlgorithmUsed::BSF:
-		//	//BFS Pathfinding
-		//	auto pathfinder = BFS<GridTerrainNode, GraphConnection>(m_pGridGraph);
-		//	break;
-		//case SearchAlgorithmUsed::AStar:
-		//	//A* Pathfinding
-		//	auto pathfinder = AStar<GridTerrainNode, GraphConnection>(m_pGridGraph, m_pHeuristicFunction);
-		//	break;
-		//case SearchAlgorithmUsed::JPS:
-		//	//JPS Pathfinding
-		//	auto pathfinder = JPS<GridTerrainNode, GraphConnection>(m_pGridGraph, m_pHeuristicFunction);
-		//	break;
-		//default:
-		//	//A* Pathfinding
-		//	auto pathfinder = AStar<GridTerrainNode, GraphConnection>(m_pGridGraph, m_pHeuristicFunction);
-		//	break;
-		//}
 
 		auto startNode = m_pGridGraph->GetNode(startPathIdx);
 		auto endNode = m_pGridGraph->GetNode(endPathIdx);
-	
-		m_vPath = pathfinder.FindPath(startNode, endNode);
+		
+		auto breathPathfinder = BFS<GridTerrainNode, GraphConnection>(m_pGridGraph, m_pHeuristicFunction);
+		auto starPathfinder = AStar<GridTerrainNode, GraphConnection>(m_pGridGraph, m_pHeuristicFunction);
+		auto jumpPathfinder = JPS<GridTerrainNode, GraphConnection>(m_pGridGraph, m_pHeuristicFunction);
+
+		switch (m_SearchAlgorithmUsed)
+		{
+		case SearchAlgorithmUsed::Breath:
+			//BFS Pathfinding
+			m_vPath = breathPathfinder.FindPath(startNode, endNode);
+			break;
+		case SearchAlgorithmUsed::Star:
+			//A* Pathfinding
+			m_vPath = starPathfinder.FindPath(startNode, endNode);
+			break;
+		case SearchAlgorithmUsed::JumpPoint:
+			//JPS Pathfinding
+			m_vPath = jumpPathfinder.FindPath(startNode, endNode);
+			break;
+		default:
+			break;
+		}
 
 		m_UpdatePath = false;
 		std::cout << "New Path Calculated" << std::endl;
@@ -232,6 +228,27 @@ void App_Pathfinding::UpdateImGui()
 				break;
 			}
 		}
+		ImGui::Spacing();
+		ImGui::Text("Used Algorithm");
+		if (ImGui::Combo("", &m_SelectedAlgorithm, "BFS\0AStar\0JPS", 2))
+		{
+			switch (m_SelectedAlgorithm)
+			{
+			case 0:
+				m_SearchAlgorithmUsed = SearchAlgorithmUsed::Breath;
+				break;
+			case 1:
+				m_SearchAlgorithmUsed = SearchAlgorithmUsed::Star;
+				break;
+			case 2:
+				m_SearchAlgorithmUsed = SearchAlgorithmUsed::JumpPoint;
+				break;
+			default:
+				m_SearchAlgorithmUsed = SearchAlgorithmUsed::Star;
+				break;
+			}
+		}
+
 		ImGui::Spacing();
 
 		//End
