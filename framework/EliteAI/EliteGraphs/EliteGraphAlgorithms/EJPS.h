@@ -35,8 +35,8 @@ namespace Elite
 	private:
 		void IdentifySuccessors(NodeRecord currentRecord, T_NodeType* pStartNode, T_NodeType* pEndNode);
 		void PruneNeighbours(NodeRecord currentRecord, std::vector<NodeRecord>& prunedNeighbors, T_NodeType* pGoalNode);
+		float GetCostNoCurrentRecord(std::list<T_ConnectionType*> connections, T_NodeType neighbor, T_NodeType parent) const;
 		float GetHeuristicCost(T_NodeType* pStartNode, T_NodeType* pEndNode) const;
-
 
 		IGraph<T_NodeType, T_ConnectionType>* m_pGraph;
 		Heuristic m_HeuristicFunction;
@@ -122,7 +122,7 @@ namespace Elite
 			//if the current evalued neighbor is also a neighbor of the parent, ignore this neighbor
 			auto it = std::find_if(parentConnections.begin(), parentConnections.end()[&neighbor](T_ConnectionType c)
 				{
-					return c->GetTo() == neighbor.GetIndex();
+					return c->GetTo() == neighborParent.GetIndex();
 				});
 			if (it != parentConnections.end())
 			{
@@ -131,17 +131,16 @@ namespace Elite
 			}
 
 			//if the current evalued neighbor is in the same direction as the record is from the parent, add it to the pruned neighbors
-			Elite::Vector2 distanceVector{ Clamp(m_pGraph->GetNodePos(neighbor).x - m_pGraph->GetNodePos(currentRecord.pNode).x, -1, 1) ,
-										   Clamp(m_pGraph->GetNodePos(neighbor).y - m_pGraph->GetNodePos(currentRecord.pNode).y, -1, 1) };
-			if (distanceVector == orientationVectorParent)
+			Elite::Vector2 orientationVectorNeighbor{ Clamp(m_pGraph->GetNodePos(neighbor).x - m_pGraph->GetNodePos(currentRecord.pNode).x, -1, 1) ,
+													  Clamp(m_pGraph->GetNodePos(neighbor).y - m_pGraph->GetNodePos(currentRecord.pNode).y, -1, 1) };
+			if (orientationVectorNeighbor == orientationVectorParent)
 			{
 				NodeRecord neighBorRecord;
 				neighBorRecord.pNode = neighbor;
 				neighBorRecord.pConnection = currentConnection;
-				prunedNeighbors.push_back(neighBorRecord);
 				neighBorRecord.costSoFar = currentRecord.costSoFar + currentConnection->GetCost();
 				neighBorRecord.estimatedTotalCost = neighBorRecord.costSoFar + GetHeuristicCost(neighBorRecord.pNode, pGoalNode);
-				openList.push_back(newNode);
+				prunedNeighbors.push_back(neighBorRecord);
 				continue;
 			}
 
@@ -151,16 +150,72 @@ namespace Elite
 			if (orientationVectorParent.x != 0 && orientationVectorParent.y == 0 ||
 				orientationVectorParent.x == 0 && orientationVectorParent.y != 0)
 			{
+				if (GetCostNoCurrentRecord(m_pGraph->GetNodeConnections(currentRecord.pNode->GetIndex()), neighbor, parent) <= costToNeighbor)
+				{
+					neighborstoIgnore.push_back(neighbor);
+					continue;
+				}
+				NodeRecord neighBorRecord;
+				neighBorRecord.pNode = neighbor;
+				neighBorRecord.pConnection = currentConnection;
+				neighBorRecord.costSoFar = currentRecord.costSoFar + currentConnection->GetCost();
+				neighBorRecord.estimatedTotalCost = neighBorRecord.costSoFar + GetHeuristicCost(neighBorRecord.pNode, pGoalNode);
+				prunedNeighbors.push_back(neighBorRecord);
+				continue;
 			}
 
 			//vertical movement
 			if (orientationVectorParent.x != 0 && orientationVectorParent.y != 0)
 			{
-
+				if (GetCostNoCurrentRecord(m_pGraph->GetNodeConnections(currentRecord.pNode->GetIndex()), neighbor, parent) < costToNeighbor)
+				{
+					neighborstoIgnore.push_back(neighbor);
+					continue;
+				}
+				NodeRecord neighBorRecord;
+				neighBorRecord.pNode = neighbor;
+				neighBorRecord.pConnection = currentConnection;
+				neighBorRecord.costSoFar = currentRecord.costSoFar + currentConnection->GetCost();
+				neighBorRecord.estimatedTotalCost = neighBorRecord.costSoFar + GetHeuristicCost(neighBorRecord.pNode, pGoalNode);
+				prunedNeighbors.push_back(neighBorRecord);
+				continue;
 			}
 
-			float cost = currentRecord.costSoFar + currentConnection->GetCost();
 		}
+	}
+
+	template<class T_NodeType, class T_ConnectionType>
+	inline float JPS<T_NodeType, T_ConnectionType>::GetCostNoCurrentRecord(std::list<T_ConnectionType*> connections, T_NodeType neighbor, T_NodeType parent) const
+	{
+		for (auto currentConnectionParent : m_pGraph->GetNodeConnections(parent->GetIndex()))
+		{
+			float costToNeighbor{ 0.f };
+			//neighbor of the parent at the end of this connection
+			auto neighborParent{ m_pGraph->GetNode(currentConnectionParent->GetTo()) };
+
+			//check if this neighbor is in the connections list of the current record
+			auto connectionIt = std::find_if(connections.begin(), connections.end()[&neighborParent](T_ConnectionType* c)
+				{
+					return neighborParent == m_pGraph->GetNode(c->GetTo());
+				});
+
+			if (connectionIt != connections.end())
+			{
+				costToNeighbor += currentConnectionParent->GetCost();
+				//check if this neighbor has a connection with the goal node.
+				std::list<T_ConnectionType*> connectionsOfConnection = m_pGraph->GetNodeConnections((*connectionIt)->GetTo());
+				auto goalIt = std::find_if(connectionsOfConnection.begin(), connectionsOfConnection.end()[&neighbor](T_ConnectionType* c)
+					{
+						return neighbor == m_pGraph->GetNode(c->GetTo());
+					});
+				if (goalIt != connectionsOfConnection.end())
+				{
+					costToNeighbor += (*goalIt)->GetCost();
+					return costToNeighbor;
+				}
+			}
+		}
+		return 0.0f;
 	}
 
 	template<class T_NodeType, class T_ConnectionType>
