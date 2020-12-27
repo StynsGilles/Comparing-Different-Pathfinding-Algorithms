@@ -109,8 +109,6 @@ namespace Elite
 		auto parentConnections = m_pGraph->GetNodeConnections(parent->GetIndex());
 		Elite::Vector2 orientationVectorParent{ m_pGraph->GetNodePos(currentRecord.pNode).x - Clamp(m_pGraph->GetNodePos(parent).x  , -1, 1) ,
 												m_pGraph->GetNodePos(currentRecord.pNode).y - Clamp(m_pGraph->GetNodePos(parent).y  , -1, 1) };
-		std::vector<T_NodeType> neighborstoIgnore;
-		neighborstoIgnore.push_back(parent);
 		for (auto currentConnection : m_pGraph->GetNodeConnections(currentRecord.pNode->GetIndex()))
 		{
 			auto neighbor{ m_pGraph->GetNode(currentConnection->GetTo()) };
@@ -126,7 +124,6 @@ namespace Elite
 				});
 			if (it != parentConnections.end())
 			{
-				neighborstoIgnore.push_back(neighbor);
 				continue;
 			}
 
@@ -152,7 +149,6 @@ namespace Elite
 			{
 				if (GetCostNoCurrentRecord(m_pGraph->GetNodeConnections(currentRecord.pNode->GetIndex()), neighbor, parent) <= costToNeighbor)
 				{
-					neighborstoIgnore.push_back(neighbor);
 					continue;
 				}
 				NodeRecord neighBorRecord;
@@ -169,7 +165,6 @@ namespace Elite
 			{
 				if (GetCostNoCurrentRecord(m_pGraph->GetNodeConnections(currentRecord.pNode->GetIndex()), neighbor, parent) < costToNeighbor)
 				{
-					neighborstoIgnore.push_back(neighbor);
 					continue;
 				}
 				NodeRecord neighBorRecord;
