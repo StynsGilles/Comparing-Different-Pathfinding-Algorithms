@@ -134,7 +134,6 @@ void App_Pathfinding::Render(float deltaTime) const
 	{
 		m_GraphRenderer.RenderHighlightedGrid(m_pGridGraph, m_vPath);
 	}
-	
 }
 
 void App_Pathfinding::MakeGridGraph()
@@ -204,7 +203,7 @@ void App_Pathfinding::UpdateImGui()
 		ImGui::Checkbox("NodeNumbers", &m_bDrawNodeNumbers);
 		ImGui::Checkbox("Connections", &m_bDrawConnections);
 		ImGui::Checkbox("Connections Costs", &m_bDrawConnectionsCosts);
-		if (ImGui::Combo("", &m_SelectedHeuristic, "Manhattan\0Euclidean\0SqrtEuclidean\0Octile\0Chebyshev", 4))
+		if (ImGui::Combo("Heuristic", &m_SelectedHeuristic, "Manhattan\0Euclidean\0SqrtEuclidean\0Octile\0Chebyshev", 4))
 		{
 			switch (m_SelectedHeuristic)
 			{
@@ -229,8 +228,7 @@ void App_Pathfinding::UpdateImGui()
 			}
 		}
 		ImGui::Spacing();
-		ImGui::Text("Used Algorithm");
-		if (ImGui::Combo("", &m_SelectedAlgorithm, "BFS\0AStar\0JPS", 2))
+		if (ImGui::Combo("Algorithm", &m_SelectedAlgorithm, "BFS\0AStar\0JPS", 2))
 		{
 			switch (m_SelectedAlgorithm)
 			{
