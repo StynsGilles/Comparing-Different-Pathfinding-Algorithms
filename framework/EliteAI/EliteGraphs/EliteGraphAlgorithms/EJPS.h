@@ -73,7 +73,6 @@ namespace Elite
 
 			if (currentRecord.pNode == pGoalNode)
 			{
-				std::cout << "path found! exiting while loop..." << std::endl;
 				foundPath = true;
 				break;
 			}
@@ -166,15 +165,12 @@ namespace Elite
 
 		while (currentRecord.pNode != pStartNode)
 		{
-			//std::cout << "stuck in this while loop ..." << std::endl;
 			finalPath.push_back(currentRecord.pNode);
 			for (std::vector<NodeRecord>::iterator it{ closedList.begin() }; it != closedList.end();)
 			{
-				//std::cout << "looping over the closed list" << std::endl;
 				NodeRecord& recordIterator = *it;
 				if (recordIterator.pNode == currentRecord.pNodeJumpedFrom)
 				{
-					std::cout << "breaking" << std::endl;
 					currentRecord = recordIterator;
 					break;
 				}
@@ -205,18 +201,15 @@ namespace Elite
 			T_NodeType* jumpNode = Jump(currentRecord, directionVector, pStartNode, pEndNode, costSoFar);
 			if (jumpNode)
 			{
-				//Elite::Vector2 previousNodePos{ jumpNode->GetPosition() - directionVector };
-				//auto previousNodePosGraph{ m_pGraph->GetNodeWorldPos(int(previousNodePos.x), int(previousNodePos.y)) };
-				//auto previousNodeIdx = m_pGraph->GetNodeFromWorldPos(previousNodePosGraph);
-				//std::cout << "current node idx: " << jumpNode->GetIndex() << std::endl;
-				//std::cout << "previous node idx: " << previousNodeIdx << std::endl;
-				//auto connectionToParent = m_pGraph->GetConnection(previousNodeIdx, jumpNode->GetIndex());
+				Elite::Vector2 previousNodePos{ jumpNode->GetPosition() - directionVector };
+				auto previousNodePosGraph{ m_pGraph->GetNodeWorldPos(int(previousNodePos.x), int(previousNodePos.y)) };
+				auto previousNodeIdx = m_pGraph->GetNodeFromWorldPos(previousNodePosGraph);
+				auto connectionToParent = m_pGraph->GetConnection(previousNodeIdx, jumpNode->GetIndex());
 				NodeRecord successor;
 				successor.pNode = jumpNode;
-				std::cout << "node jumped from: " << currentRecord.pNode->GetIndex() << std::endl;
 				successor.pNodeJumpedFrom = currentRecord.pNode;
 				successor.costSoFar = costSoFar;
-				//successor.pConnection = connectionToParent;
+				successor.pConnection = connectionToParent;
 				successors.push_back(successor);
 			}
 		}
@@ -242,8 +235,8 @@ namespace Elite
 		int parentIndex{ currentRecord.pConnection->GetFrom() };
 		auto parent = m_pGraph->GetNode(parentIndex);
 		auto parentConnections = m_pGraph->GetNodeConnections(parent->GetIndex());
-		Elite::Vector2 orientationVectorParent{ m_pGraph->GetNodePos(currentRecord.pNode).x - Clamp(m_pGraph->GetNodePos(parent).x  , -1.f, 1.f) ,
-												m_pGraph->GetNodePos(currentRecord.pNode).y - Clamp(m_pGraph->GetNodePos(parent).y  , -1.f, 1.f) };
+		Elite::Vector2 orientationVectorParent{ Clamp(m_pGraph->GetNodePos(currentRecord.pNode).x - m_pGraph->GetNodePos(parent).x  , -1.f, 1.f) ,
+												Clamp(m_pGraph->GetNodePos(currentRecord.pNode).y - m_pGraph->GetNodePos(parent).y  , -1.f, 1.f) };
 		for (auto currentConnection : m_pGraph->GetNodeConnections(currentRecord.pNode->GetIndex()))
 		{
 			auto neighbor = m_pGraph->GetNode(currentConnection->GetTo());
@@ -278,7 +271,7 @@ namespace Elite
 
 			float costToNeighbor{ currentRecord.pConnection->GetCost() + currentConnection->GetCost() };
 
-			//vertical movement
+			//diagonal movement
 			if (orientationVectorParent.x != 0 && orientationVectorParent.y != 0)
 			{
 				if (GetCostNoCurrentRecord(m_pGraph->GetNodeConnections(currentRecord.pNode->GetIndex()), neighbor, parent) < costToNeighbor)
@@ -293,7 +286,7 @@ namespace Elite
 				prunedNeighbors.push_back(neighBorRecord);
 				continue;
 			}
-			//horizontal movement
+			//horizontal and vertical movement
 			else
 			{
 				if (GetCostNoCurrentRecord(m_pGraph->GetNodeConnections(currentRecord.pNode->GetIndex()), neighbor, parent) <= costToNeighbor)
@@ -365,11 +358,7 @@ namespace Elite
 	{
 		Elite::Vector2 nextNodePos{ currentRecord.pNode->GetPosition() + direction };
 		auto nextNodePosGraph{ m_pGraph->GetNodeWorldPos(int(nextNodePos.x), int(nextNodePos.y)) };
-		//std::cout << "current node position: x: " << currentRecord.pNode->GetPosition().x << " y: " << currentRecord.pNode->GetPosition().y << std::endl;
-		//std::cout << "next node position: x: " << nextNodePosGraph.x << " y: " << nextNodePosGraph.y << std::endl;
-		//std::cout << "current node index: " << currentRecord.pNode->GetIndex() << std::endl;
 		auto nextNodeIdx = m_pGraph->GetNodeFromWorldPos(nextNodePosGraph);
-		//std::cout << "next node index: " << nextNodeIdx << std::endl;
 		if (nextNodeIdx < 0)
 		{
 			return nullptr;
@@ -384,14 +373,39 @@ namespace Elite
 			return nextNode.pNode;
 		}
 
+		auto connectionsNextNode = m_pGraph->GetConnections(nextNodeIdx);
+
 		//diagonal direction
 		if (direction.x != 0 && direction.y != 0)
 		{
-			//TODO: check for diagonal forced neighbors
-			//if (/*check for diagonal forced neighbors*/)
-			//{
-			//	return nextNode.pNode;
-			//}
+			//check for diagonal forced neighbors
+			for (auto connection : connectionsNextNode)
+			{
+				auto neighbor = m_pGraph->GetNode(connection->GetTo());
+
+				if(neighbor == currentRecord.pNode)
+				{
+					continue;
+				}
+
+				Elite::Vector2 directionToNeighbor{ Clamp(m_pGraph->GetNodePos(neighbor).x - m_pGraph->GetNodePos(nextNode.pNode).x  , -1.f, 1.f) ,
+													Clamp(m_pGraph->GetNodePos(neighbor).y - m_pGraph->GetNodePos(nextNode.pNode).y  , -1.f, 1.f) };
+				if (directionToNeighbor.x != 0 && directionToNeighbor.y != 0)
+				{
+					float costToNeighborNoCurrentRecord{ GetCostNoCurrentRecord(m_pGraph->GetNodeConnections(nextNodeIdx), neighbor, currentRecord.pNode) };
+					float costToNeighbor{ m_pGraph->GetConnection(nextNodeIdx, currentRecord.pNode->GetIndex())->GetCost() + connection->GetCost() };
+					if (costToNeighborNoCurrentRecord < costToNeighbor&&
+						costToNeighborNoCurrentRecord > 0.f)
+					{
+						continue;
+					}
+					return nextNode.pNode;
+				}
+				else
+				{
+					continue;
+				}
+			}
 
 			if (Jump(nextNode, Elite::Vector2(direction.x, 0.f), pStartNode, pEndNode, costSoFar) != nullptr ||
 				Jump(nextNode, Elite::Vector2(0.f, direction.y), pStartNode, pEndNode, costSoFar) != nullptr)
@@ -404,20 +418,66 @@ namespace Elite
 			//horizontal direction
 			if (direction.x != 0)
 			{
-				//TODO: check for horizontal forced neighbors
-				//if (/*check for horizontal forced neighbors*/)
-				//{
-				//	return nextNode.pNode;
-				//}
+				//check for horizontal forced neighbors
+				for (auto connection : connectionsNextNode)
+				{
+					auto neighbor = m_pGraph->GetNode(connection->GetTo());
+
+					if (neighbor == currentRecord.pNode)
+					{
+						continue;
+					}
+
+					Elite::Vector2 directionToNeighbor{ Clamp(m_pGraph->GetNodePos(neighbor).x - m_pGraph->GetNodePos(nextNode.pNode).x  , -1.f, 1.f) ,
+														Clamp(m_pGraph->GetNodePos(neighbor).y - m_pGraph->GetNodePos(nextNode.pNode).y  , -1.f, 1.f) };
+					if (directionToNeighbor.x != 0 && directionToNeighbor.y == 0)
+					{
+						float costToNeighborNoCurrentRecord{ GetCostNoCurrentRecord(m_pGraph->GetNodeConnections(nextNodeIdx), neighbor, currentRecord.pNode) };
+						float costToNeighbor{ m_pGraph->GetConnection(nextNodeIdx, currentRecord.pNode->GetIndex())->GetCost() + connection->GetCost() };
+						if (costToNeighborNoCurrentRecord <= costToNeighbor &&
+							costToNeighborNoCurrentRecord > 0.f)
+						{
+							continue;
+						}
+						return nextNode.pNode;
+					}
+					else
+					{
+						continue;
+					}
+				}
 			}
 			//vertical direction
 			else
 			{
-				//TODO: check for vertical forced neighbors
-				//if (/*check for vertical forced neighbors*/)
-				//{
-				//	return nextNode.pNode;
-				//}
+				//check for vertical forced neighbors
+				for (auto connection : connectionsNextNode)
+				{
+					auto neighbor = m_pGraph->GetNode(connection->GetTo());
+
+					if (neighbor == currentRecord.pNode)
+					{
+						continue;
+					}
+
+					Elite::Vector2 directionToNeighbor{ Clamp(m_pGraph->GetNodePos(neighbor).x - m_pGraph->GetNodePos(nextNode.pNode).x  , -1.f, 1.f) ,
+														Clamp(m_pGraph->GetNodePos(neighbor).y - m_pGraph->GetNodePos(nextNode.pNode).y  , -1.f, 1.f) };
+					if (directionToNeighbor.x == 0 && directionToNeighbor.y != 0)
+					{
+						float costToNeighborNoCurrentRecord{ GetCostNoCurrentRecord(m_pGraph->GetNodeConnections(nextNodeIdx), neighbor, currentRecord.pNode) };
+						float costToNeighbor{ m_pGraph->GetConnection(nextNodeIdx, currentRecord.pNode->GetIndex())->GetCost() + connection->GetCost() };
+						if (costToNeighborNoCurrentRecord <= costToNeighbor &&
+							costToNeighborNoCurrentRecord > 0.f)
+						{
+							continue;
+						}
+						return nextNode.pNode;
+					}
+					else
+					{
+						continue;
+					}
+				}
 			}
 		}
 

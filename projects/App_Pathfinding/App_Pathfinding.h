@@ -39,7 +39,7 @@ private:
 
 	//Grid datamembers
 	static const int COLUMNS = 20;
-	static const int ROWS = 10;
+	static const int ROWS = 20;
 	unsigned int m_SizeCell = 15;
 	Elite::GridGraph<Elite::GridTerrainNode, Elite::GraphConnection>* m_pGridGraph;
 
