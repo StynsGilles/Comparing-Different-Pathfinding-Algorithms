@@ -53,8 +53,8 @@ namespace Elite
 	class GridTerrainNode : public GraphNode2D
 	{
 	public:
-		GridTerrainNode(int index)
-			: GraphNode2D(index), m_Terrain(TerrainType::Ground)
+		GridTerrainNode(int index, Elite::Vector2 position)
+			: GraphNode2D(index, position), m_Terrain(TerrainType::Ground)
 		{
 		}
 		virtual ~GridTerrainNode() = default;

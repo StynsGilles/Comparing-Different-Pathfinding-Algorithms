@@ -88,7 +88,7 @@ namespace Elite
 			for (auto c = 0; c < m_NrOfColumns; ++c)
 			{
 				int idx = GetIndex(c, r);
-				AddNode(new T_NodeType(idx));
+				AddNode(new T_NodeType(idx, Elite::Vector2(float(c), float(r))));
 			}
 		}
 

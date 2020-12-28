@@ -127,7 +127,7 @@ namespace Elite
 					continue;
 				}
 				NodeRecord newNode{};
-				newNode.pNode = m_pGraph->GetNode(currentConnection->GetTo());
+				newNode.pNode = neighbor;
 				newNode.pConnection = currentConnection;
 				newNode.costSoFar = costSoFar;
 				newNode.estimatedTotalCost = newNode.costSoFar + GetHeuristicCost(newNode.pNode, pGoalNode);

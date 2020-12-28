@@ -72,6 +72,7 @@ namespace Elite
 
 			if (currentRecord.pNode == pGoalNode)
 			{
+				std::cout << "path found! exiting while loop..." << std::endl;
 				foundPath = true;
 				break;
 			}
@@ -134,7 +135,7 @@ namespace Elite
 				}
 				NodeRecord newNode{};
 				newNode.pNode = successor.pNode;
-				//newNode.pConnection = currentConnection;
+				newNode.pConnection = successor.pConnection;
 				newNode.costSoFar = costSoFar;
 				newNode.estimatedTotalCost = newNode.costSoFar + GetHeuristicCost(newNode.pNode, pGoalNode);
 				openList.push_back(newNode);
@@ -192,16 +193,24 @@ namespace Elite
 		for (auto neighbor : neighbors)
 		{
 			float costSoFar = currentRecord.costSoFar;
-			float directionX{ Elite::Clamp(m_pGraph->GetNodePos(neighbor.pNode).x - m_pGraph->GetNodePos(currentRecord.pNode).x, -1.f, 1.f) };
-			float directionY{ Elite::Clamp(m_pGraph->GetNodePos(neighbor.pNode).y - m_pGraph->GetNodePos(currentRecord.pNode).y, -1.f, 1.f) };
+
+			float directionX{ m_pGraph->GetNodePos(neighbor.pNode).x - m_pGraph->GetNodePos(currentRecord.pNode).x };
+			float directionY{ m_pGraph->GetNodePos(neighbor.pNode).y - m_pGraph->GetNodePos(currentRecord.pNode).y };
 			Elite::Vector2 directionVector{ directionX, directionY };
 		
 			T_NodeType* jumpNode = Jump(currentRecord, directionVector, pStartNode, pEndNode, costSoFar);
 			if (jumpNode)
 			{
+				Elite::Vector2 previousNodePos{ jumpNode->GetPosition() - directionVector };
+				auto previousNodePosGraph{ m_pGraph->GetNodeWorldPos(int(previousNodePos.x), int(previousNodePos.y)) };
+				auto previousNodeIdx = m_pGraph->GetNodeFromWorldPos(previousNodePosGraph);
+				std::cout << "previous node idx: " << previousNodeIdx << std::endl;
+				auto connectionToParent = m_pGraph->GetConnection(previousNodeIdx, currentRecord.pNode->GetIndex());
+
 				NodeRecord successor;
 				successor.pNode = jumpNode;
 				successor.costSoFar = costSoFar;
+				successor.pConnection = connectionToParent;
 				successors.push_back(successor);
 			}
 		}
@@ -210,8 +219,7 @@ namespace Elite
 	template<class T_NodeType, class T_ConnectionType>
 	inline void JPS<T_NodeType, T_ConnectionType>::PruneNeighbors(NodeRecord currentRecord, std::vector<NodeRecord>& prunedNeighbors, T_NodeType* pGoalNode)
 	{
-		int parentIndex{ currentRecord.pConnection->GetFrom()};
-		if (parentIndex < 0 || parentIndex >= m_pGraph->GetNrOfNodes())
+		if (currentRecord.pConnection== nullptr)
 		{
 			for (auto currentConnection : m_pGraph->GetNodeConnections(currentRecord.pNode->GetIndex()))
 			{
@@ -225,6 +233,7 @@ namespace Elite
 			}
 			return;
 		}
+		int parentIndex{ currentRecord.pConnection->GetFrom() };
 		auto parent = m_pGraph->GetNode(parentIndex);
 		auto parentConnections = m_pGraph->GetNodeConnections(parent->GetIndex());
 		Elite::Vector2 orientationVectorParent{ m_pGraph->GetNodePos(currentRecord.pNode).x - Clamp(m_pGraph->GetNodePos(parent).x  , -1.f, 1.f) ,
@@ -349,8 +358,12 @@ namespace Elite
 	inline T_NodeType* JPS<T_NodeType, T_ConnectionType>::Jump(NodeRecord currentRecord, Elite::Vector2 direction, T_NodeType* pStartNode, T_NodeType* pEndNode, float& costSoFar)
 	{
 		Elite::Vector2 nextNodePos{ currentRecord.pNode->GetPosition() + direction };
-
-		auto nextNodeIdx = m_pGraph->GetNodeFromWorldPos(nextNodePos);
+		auto nextNodePosGraph{ m_pGraph->GetNodeWorldPos(int(nextNodePos.x), int(nextNodePos.y)) };
+		//std::cout << "current node position: x: " << currentRecord.pNode->GetPosition().x << " y: " << currentRecord.pNode->GetPosition().y << std::endl;
+		//std::cout << "next node position: x: " << nextNodePosGraph.x << " y: " << nextNodePosGraph.y << std::endl;
+		//std::cout << "current node index: " << currentRecord.pNode->GetIndex() << std::endl;
+		auto nextNodeIdx = m_pGraph->GetNodeFromWorldPos(nextNodePosGraph);
+		//std::cout << "next node index: " << nextNodeIdx << std::endl;
 		if (nextNodeIdx < 0)
 		{
 			return nullptr;
@@ -371,7 +384,7 @@ namespace Elite
 			//TODO: check for diagonal forced neighbors
 			//if (/*check for diagonal forced neighbors*/)
 			//{
-			//	return nextNode;
+			//	return nextNode.pNode;
 			//}
 
 			if (Jump(nextNode, Elite::Vector2(direction.x, 0.f), pStartNode, pEndNode, costSoFar) != nullptr ||
@@ -388,7 +401,7 @@ namespace Elite
 				//TODO: check for horizontal forced neighbors
 				//if (/*check for horizontal forced neighbors*/)
 				//{
-				//	return nextNode;
+				//	return nextNode.pNode;
 				//}
 			}
 			//vertical direction
@@ -397,7 +410,7 @@ namespace Elite
 				//TODO: check for vertical forced neighbors
 				//if (/*check for vertical forced neighbors*/)
 				//{
-				//	return nextNode;
+				//	return nextNode.pNode;
 				//}
 			}
 		}

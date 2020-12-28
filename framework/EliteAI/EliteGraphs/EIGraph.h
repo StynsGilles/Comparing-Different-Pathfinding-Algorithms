@@ -171,7 +171,7 @@ namespace Elite
 			if (c && c->GetTo() == to)
 				return c;
 		}
-
+		//std::cout << "no connection found, returning nullptr" << std::endl;
 		return nullptr;
 	}
 
