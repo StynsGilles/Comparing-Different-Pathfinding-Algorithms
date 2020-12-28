@@ -12,6 +12,7 @@ namespace Elite
 		struct NodeRecord
 		{
 			T_NodeType* pNode = nullptr;
+			T_NodeType* pNodeJumpedFrom = nullptr;
 			T_ConnectionType* pConnection = nullptr;
 			float costSoFar = 0.f; // accumulated g-costs of all the connections leading up to this one
 			float estimatedTotalCost = 0.f; // f-cost (= costSoFar + h-cost)
@@ -79,7 +80,6 @@ namespace Elite
 
 			std::vector<NodeRecord> successors;
 			IdentifySuccessors(currentRecord, pStartNode, pGoalNode, successors);
-
 			for (auto successor : successors)
 			{
 				float costSoFar = successor.costSoFar;
@@ -135,6 +135,7 @@ namespace Elite
 				}
 				NodeRecord newNode{};
 				newNode.pNode = successor.pNode;
+				newNode.pNodeJumpedFrom = successor.pNodeJumpedFrom;
 				newNode.pConnection = successor.pConnection;
 				newNode.costSoFar = costSoFar;
 				newNode.estimatedTotalCost = newNode.costSoFar + GetHeuristicCost(newNode.pNode, pGoalNode);
@@ -165,12 +166,15 @@ namespace Elite
 
 		while (currentRecord.pNode != pStartNode)
 		{
+			//std::cout << "stuck in this while loop ..." << std::endl;
 			finalPath.push_back(currentRecord.pNode);
 			for (std::vector<NodeRecord>::iterator it{ closedList.begin() }; it != closedList.end();)
 			{
+				//std::cout << "looping over the closed list" << std::endl;
 				NodeRecord& recordIterator = *it;
-				if (recordIterator.pNode == m_pGraph->GetNode(currentRecord.pConnection->GetFrom()))
+				if (recordIterator.pNode == currentRecord.pNodeJumpedFrom)
 				{
+					std::cout << "breaking" << std::endl;
 					currentRecord = recordIterator;
 					break;
 				}
@@ -201,16 +205,18 @@ namespace Elite
 			T_NodeType* jumpNode = Jump(currentRecord, directionVector, pStartNode, pEndNode, costSoFar);
 			if (jumpNode)
 			{
-				Elite::Vector2 previousNodePos{ jumpNode->GetPosition() - directionVector };
-				auto previousNodePosGraph{ m_pGraph->GetNodeWorldPos(int(previousNodePos.x), int(previousNodePos.y)) };
-				auto previousNodeIdx = m_pGraph->GetNodeFromWorldPos(previousNodePosGraph);
-				std::cout << "previous node idx: " << previousNodeIdx << std::endl;
-				auto connectionToParent = m_pGraph->GetConnection(previousNodeIdx, currentRecord.pNode->GetIndex());
-
+				//Elite::Vector2 previousNodePos{ jumpNode->GetPosition() - directionVector };
+				//auto previousNodePosGraph{ m_pGraph->GetNodeWorldPos(int(previousNodePos.x), int(previousNodePos.y)) };
+				//auto previousNodeIdx = m_pGraph->GetNodeFromWorldPos(previousNodePosGraph);
+				//std::cout << "current node idx: " << jumpNode->GetIndex() << std::endl;
+				//std::cout << "previous node idx: " << previousNodeIdx << std::endl;
+				//auto connectionToParent = m_pGraph->GetConnection(previousNodeIdx, jumpNode->GetIndex());
 				NodeRecord successor;
 				successor.pNode = jumpNode;
+				std::cout << "node jumped from: " << currentRecord.pNode->GetIndex() << std::endl;
+				successor.pNodeJumpedFrom = currentRecord.pNode;
 				successor.costSoFar = costSoFar;
-				successor.pConnection = connectionToParent;
+				//successor.pConnection = connectionToParent;
 				successors.push_back(successor);
 			}
 		}
