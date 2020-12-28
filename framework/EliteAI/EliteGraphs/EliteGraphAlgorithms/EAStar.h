@@ -176,6 +176,7 @@ namespace Elite
 
 		return finalPath;
 	}
+
 	template<class T_NodeType, class T_ConnectionType>
 	inline float AStar<T_NodeType, T_ConnectionType>::GetHeuristicCost(T_NodeType* pStartNode, T_NodeType* pEndNode) const
 	{

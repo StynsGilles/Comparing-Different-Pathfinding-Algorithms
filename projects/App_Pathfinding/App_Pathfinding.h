@@ -61,8 +61,8 @@ private:
 	bool m_StartSelected = true;
 	int m_SelectedHeuristic = 4;
 	Elite::Heuristic m_pHeuristicFunction = Elite::HeuristicFunctions::Chebyshev;
-	int m_SelectedAlgorithm = 1;
-	SearchAlgorithmUsed  m_SearchAlgorithmUsed = SearchAlgorithmUsed::Star;
+	int m_SelectedAlgorithm = 2;
+	SearchAlgorithmUsed  m_SearchAlgorithmUsed = SearchAlgorithmUsed::JumpPoint;
 
 	//Functions
 	void MakeGridGraph();
