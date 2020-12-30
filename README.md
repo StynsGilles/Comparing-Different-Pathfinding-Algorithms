@@ -37,3 +37,9 @@ The exercise for this application was for me to implement the A star algorithm. 
 ![Image example of A*](https://i.imgur.com/aYjdJVt.png)
 
 ### Jump Point Search
+
+As the focus of this project, I wanted to try and implement JPS myself. This is an improved version of A*, that works optimally in a cost uniform grid (all connection in a certain direction cost the same to follow). JPS works similarly to A* in that it will focus on the paths that are most likey to lead to the most optimal route to the goal node. The difference of JPS however, is that it will jump over nodes whenever it knows that it's fine to follow the path as far as possible. For example, if the start node first has to go 6 space to the right before turning, then JPS will jump from the first node, to the 6th node to instantly recalculate from that point where it will go next.
+
+![Image example of JPS](https://i.imgur.com/4wKZCJB.png)
+
+
