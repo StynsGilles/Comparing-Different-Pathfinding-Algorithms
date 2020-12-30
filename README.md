@@ -9,7 +9,7 @@
 
 BFS and A* I had to implement during my classes Gameplay programming, so this research will mostly be focusing on the implementation of JPS.
 
-## Color code for the algorithms
+## Color code for the images of the algorithms
 
 - **Bright Green Circle**: Start node
 - **Bright Red Circle**: End node
@@ -32,7 +32,7 @@ The hands on for this application was the programming of the BFS algorithm. This
 
 ### A Star
 
-The exercise for this application was for me to implement the A star algorithm. This algorithm is a **Best-first search** algorithm. This means that every time it goes over all possible paths, it will only extend the paths that are most likely to be the most optimal routes to the goal node. This algorithm is fast and is very commonly used in video games, for example Age of Empires. 
+The exercise for this application was for me to implement the A star algorithm. This algorithm is a **Best-first search** algorithm. This means that every time it goes over all possible paths, it will only extend the paths that are most likely to be the most optimal routes to the goal node. This way A* does not guarantee the shortest path, but makes more than up for this by being as fast as it is. This algorithm is fast and is very commonly used in video games, for example Age of Empires. 
 
 ![Image example of A*](https://i.imgur.com/aYjdJVt.png)
 
@@ -42,4 +42,18 @@ As the focus of this project, I wanted to try and implement JPS myself. This is 
 
 ![Image example of JPS](https://i.imgur.com/4wKZCJB.png)
 
+To be able to do this jumping, JPS prunes neighbors of the node it goes to to find out if the path to those neighbors are dominated by a different path that does not include the node that's being evaluated.
+What this means for diagonal pathing: if there is a path, without going through the current node, coming from the parent of the current node to the neighbor that gets evaluated on pruning that is strictly shorter than the path if it was to go through the current node, then this neighbor gets pruned.
+For horizontal pathing: if there is a path, without going through the current node, coming from the parent of the current node to the neighbor that gets evaluated on pruning that is shorter or equal in cost than the path if it was to go through the current node, then this neighbor gets pruned.
+
+Example of how this neighbor pruning works from the paper "Online Graph Pruning for Pathfinding on Grid Maps" by Daniel Harabor and Alban Grastien:
+![Image example of pruning neighbors](https://i.imgur.com/WJIrUek.png)
+
+JPS will keep looking for a point to jump to until one of 3 definitions has been met for the point to jump to:
+1. The node is the goal node, so there is no point in continuing 
+2. The node has atleast one neighbor that is forced. A neighbor can be forced if it is not a natural neighor of the current node, for example in the above image in B and D, respectively speaking node 3 and 1 are forced neighbors of x.
+3. (only for diagonal direction) There is a neighbor of the current node that is a jump point from the goal node. 
+
+Example for the 3rd definition of a jump point (point y is a jump point of x because it has a neighbor that could be a jump point of the end node, which is z):
+![Image example of jump point definition 3](https://i.imgur.com/ZV7Fi7y.png)
 
