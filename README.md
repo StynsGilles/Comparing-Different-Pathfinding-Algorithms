@@ -59,11 +59,11 @@ JPS will keep looking for a point to jump to until one of 3 definitions has been
 
 ![Image example of jump point definition 3](https://i.imgur.com/ZV7Fi7y.png)
 
-##Testing and comparing the different algorithms
+## Testing and comparing the different algorithms
 
 
 
-##References
+## References
 
 
 [Online Graph Pruning for Pathfinding on Grid Maps by Daniel Harabor and Alban Grastien](http://grastien.net/ban/articles/hg-aaai11.pdf)
