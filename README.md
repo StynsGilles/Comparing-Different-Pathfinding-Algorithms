@@ -65,13 +65,29 @@ To test the 3 different algorithms, I set up 3 different example situations wher
 
 ### situation 1:
 
+![Image of the layout of situation 1](https://i.imgur.com/IpGmt3C.png)
+
 #### BSF
+
+![Image of BSF doing situation 1](https://i.imgur.com/TJ77maV.png)
+
+The average time of BSF for situation 1 was 0.00819465 seconds. With the slowest time being 0.0091826 and the fastest time being 0.0077329 seconds.
 
 #### A*
 
+![Image of A* doing situation 1](https://i.imgur.com/Ow9ryOX.png)
+
+The average time of A* for situation 1 was 0.06232561 seconds. With the slowest time being 0.0672769 and the fastest time being 0.0596939 seconds.
+
 #### JPS
 
+![Image of JPS doing situation 1](https://i.imgur.com/arHJx4i.png)
+
+The average time of JPS for situation 1 was 0.0210867 seconds. With the slowest time being 0.021945 and the fastest time being 0.0206956 seconds.
+
 ### situation 2:
+
+![Image of the layout of situation 2](https://i.imgur.com/L9kAbeS.png)
 
 #### BSF
 
@@ -80,6 +96,8 @@ To test the 3 different algorithms, I set up 3 different example situations wher
 #### JPS
 
 ### situation 3:
+
+Advanced layout with a lot of water to go around
 
 ![Image of the layout of situation 3](https://i.imgur.com/EERoWCi.png)
 
