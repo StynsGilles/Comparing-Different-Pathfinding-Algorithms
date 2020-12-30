@@ -11,14 +11,14 @@ BFS and A* I had to implement during my classes Gameplay programming, so this re
 
 ## Color code for the algorithms
 
-**Bright Green Circle**: Start node
-**Bright Red Circle**: End node
-**Darker Green Circles**: Final path between the 2 nodes
-**Red Rectangles**: Closed list of the algorithm
-**Yellow Rectangles**: Open list of the algorithm
-**Grey Rectangles**: unvisited nodes of the graph
-**Brown Rectangles**: Mud nodes (more expensive nodes to go through)
-**Blue Rectangles**: Water nodes (nodes that are impossible to go through)
+- **Bright Green Circle**: Start node
+- **Bright Red Circle**: End node
+- **Darker Green Circles**: Final path between the 2 nodes
+- **Red Rectangles**: Closed list of the algorithm
+- **Yellow Rectangles**: Open list of the algorithm
+- **Grey Rectangles**: unvisited nodes of the graph
+- **Brown Rectangles**: Mud nodes (more expensive nodes to go through)
+- **Blue Rectangles**: Water nodes (nodes that are impossible to go through)
 
 ## Implementation
 
