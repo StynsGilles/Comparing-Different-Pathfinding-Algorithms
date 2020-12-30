@@ -46,7 +46,7 @@ To be able to do this jumping, JPS prunes neighbors of the node it goes to to fi
 What this means for diagonal pathing: if there is a path, without going through the current node, coming from the parent of the current node to the neighbor that gets evaluated on pruning that is strictly shorter than the path if it was to go through the current node, then this neighbor gets pruned.
 For horizontal pathing: if there is a path, without going through the current node, coming from the parent of the current node to the neighbor that gets evaluated on pruning that is shorter or equal in cost than the path if it was to go through the current node, then this neighbor gets pruned.
 
-- Example of how this neighbor pruning works from the paper "Online Graph Pruning for Pathfinding on Grid Maps" by Daniel Harabor and Alban Grastien:
+- Example of how this neighbor pruning works from the paper "Online Graph Pruning for Pathfinding on Grid Maps" by Daniel Harabor and Alban Grastien:\n
 ![Image example of pruning neighbors](https://i.imgur.com/WJIrUek.png)
 
 JPS will keep looking for a point to jump to until one of 3 definitions has been met for the point to jump to:
@@ -54,6 +54,6 @@ JPS will keep looking for a point to jump to until one of 3 definitions has been
 2. The node has atleast one neighbor that is forced. A neighbor can be forced if it is not a natural neighor of the current node, for example in the above image in B and D, respectively speaking node 3 and 1 are forced neighbors of x.
 3. (only for diagonal direction) There is a neighbor of the current node that is a jump point from the goal node. 
 
-- Example for the 3rd definition of a jump point (point y is a jump point of x because it has a neighbor that could be a jump point of the end node, which is z):
+- Example for the 3rd definition of a jump point (point y is a jump point of x because it has a neighbor that could be a jump point of the end node, which is z):\n
 ![Image example of jump point definition 3](https://i.imgur.com/ZV7Fi7y.png)
 
