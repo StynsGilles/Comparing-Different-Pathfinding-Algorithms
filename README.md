@@ -69,3 +69,13 @@ JPS will keep looking for a point to jump to until one of 3 definitions has been
 [Online Graph Pruning for Pathfinding on Grid Maps by Daniel Harabor and Alban Grastien](http://grastien.net/ban/articles/hg-aaai11.pdf)
 
 [Jump Point Search Example](https://gamedevelopment.tutsplus.com/tutorials/how-to-speed-up-a-pathfinding-with-the-jump-point-search-algorithm--gamedev-5818)
+
+[Dijkstra's algorithm](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm#History)
+
+[Pathfinding](https://en.wikipedia.org/wiki/Pathfinding)
+
+[Breadth First Search Algorithm](https://en.wikipedia.org/wiki/Breadth-first_search)
+
+[A* Search Algorithm](https://en.wikipedia.org/wiki/A*_search_algorithm)
+
+[What is Jump Point Search (video)](https://www.youtube.com/watch?v=wNOoyZ45SmQ&t=251s&ab_channel=TECHDOSE)
