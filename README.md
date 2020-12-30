@@ -65,8 +65,41 @@ To test the 3 different algorithms, I set up 3 different example situations wher
 
 ### situation 1:
 
-![Image of the layout of situation 1](https://i.imgur.com/EERoWCi.png)
+#### BSF
 
+#### A*
+
+#### JPS
+
+### situation 2:
+
+#### BSF
+
+#### A*
+
+#### JPS
+
+### situation 3:
+
+![Image of the layout of situation 3](https://i.imgur.com/EERoWCi.png)
+
+#### BSF
+
+![Image of BSF doing situation 3](https://i.imgur.com/eQVShLj.png)
+
+The average time of BSF for situation 3 was 0.00632271 seconds. With the slowest time being 0.0081299 and the fastest time being 0.0058184 seconds.
+
+#### A*
+
+![Image of A* doing situation 3](https://i.imgur.com/txBky59.png)
+
+The average time of A* for situation 3 was 0.02757065 seconds. With the slowest time being 0.0265119 and the fastest time being 0.02845 seconds.
+
+#### JPS
+
+![Image of JPS doing situation 1](https://i.imgur.com/AXKa3zW.png)
+
+JPS did not find a path to the end node in this situation.
 
 ## References
 
