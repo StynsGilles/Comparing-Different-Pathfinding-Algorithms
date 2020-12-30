@@ -61,6 +61,11 @@ JPS will keep looking for a point to jump to until one of 3 definitions has been
 
 ## Testing and comparing the different algorithms
 
+To test the 3 different algorithms, I set up 3 different example situations where all 3 have to find the path from the same start to destination nodes. For every situation every algorithm was run 10 times and the average time was picked every time.
+
+### situation 1:
+
+![Image of the layout of situation 1](https://i.imgur.com/EERoWCi.png)
 
 
 ## References
