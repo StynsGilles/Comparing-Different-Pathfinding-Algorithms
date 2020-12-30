@@ -47,6 +47,8 @@ private:
 	int startPathIdx = invalid_node_index;
 	int endPathIdx = invalid_node_index;
 	std::vector<Elite::GridTerrainNode*> m_vPath;
+	std::vector<Elite::GridTerrainNode*> m_OpenList;
+	std::vector<Elite::GridTerrainNode*> m_ClosedList;
 	bool m_UpdatePath = true;
 
 	//Editor and Visualisation

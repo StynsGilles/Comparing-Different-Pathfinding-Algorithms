@@ -26,6 +26,9 @@ namespace Elite
 		template<class T_NodeType, class T_ConnectionType>
 		void RenderHighlightedGrid(GridGraph<T_NodeType, T_ConnectionType>* pGraph, std::vector<T_NodeType*> path, Color col = HIGHLIGHTED_NODE_COLOR) const;
 
+		template<class T_NodeType, class T_ConnectionType>
+		void RenderRectangularGridPart(GridGraph<T_NodeType, T_ConnectionType>* pGraph, std::vector<T_NodeType*> path, Color col = HIGHLIGHTED_NODE_COLOR) const;
+
 	private:
 		void RenderCircleNode(Vector2 pos, std::string text = "", float radius = 3.0f, Elite::Color col = DEFAULT_NODE_COLOR, float depth = 0.0f) const;
 		void RenderRectNode(Vector2 pos, std::string text = "", float width = 3.0f, Elite::Color col = DEFAULT_NODE_COLOR, float depth = 0.0f) const;
@@ -161,6 +164,23 @@ namespace Elite
 				pGraph->GetNodeWorldPos(node),
 				"",
 				3.1f,
+				col,
+				-0.2f
+			);
+		}
+	}
+
+	template<class T_NodeType, class T_ConnectionType>
+	inline void EGraphRenderer::RenderRectangularGridPart(GridGraph<T_NodeType, T_ConnectionType>* pGraph, std::vector<T_NodeType*> path, Color col) const
+	{
+		int cellSize = pGraph->m_CellSize;
+		for (auto node : path)
+		{
+			//Node
+			RenderRectNode(
+				pGraph->GetNodeWorldPos(node),
+				"",
+				float(cellSize),
 				col,
 				-0.2f
 			);

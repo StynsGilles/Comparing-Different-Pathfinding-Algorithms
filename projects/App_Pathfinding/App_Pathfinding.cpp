@@ -81,27 +81,35 @@ void App_Pathfinding::Update(float deltaTime)
 		auto breathPathfinder = BFS<GridTerrainNode, GraphConnection>(m_pGridGraph, m_pHeuristicFunction);
 		auto starPathfinder = AStar<GridTerrainNode, GraphConnection>(m_pGridGraph, m_pHeuristicFunction);
 		auto jumpPathfinder = JPS<GridTerrainNode, GraphConnection>(m_pGridGraph, m_pHeuristicFunction);
-
+		m_OpenList.clear();
+		m_ClosedList.clear();
+		std::chrono::system_clock::time_point startTime = std::chrono::system_clock::now();
+		std::cout << "Using ";
+		// Some computation here
 		switch (m_SearchAlgorithmUsed)
 		{
 		case SearchAlgorithmUsed::Breath:
 			//BFS Pathfinding
-			m_vPath = breathPathfinder.FindPath(startNode, endNode);
+			std::cout << "Breath First Search" << std::endl;
+			m_vPath = breathPathfinder.FindPath(startNode, endNode, m_OpenList, m_ClosedList);
 			break;
 		case SearchAlgorithmUsed::Star:
 			//A* Pathfinding
-			m_vPath = starPathfinder.FindPath(startNode, endNode);
+			std::cout << "A star" << std::endl;
+			m_vPath = starPathfinder.FindPath(startNode, endNode, m_OpenList, m_ClosedList);
 			break;
 		case SearchAlgorithmUsed::JumpPoint:
 			//JPS Pathfinding
-			m_vPath = jumpPathfinder.FindPath(startNode, endNode);
+			std::cout << "Jump Point Search" << std::endl;
+			m_vPath = jumpPathfinder.FindPath(startNode, endNode, m_OpenList, m_ClosedList);
 			break;
 		default:
 			break;
 		}
-
+		std::chrono::system_clock::time_point endTime = std::chrono::system_clock::now();
+		std::chrono::duration<double> elapsedTime = endTime - startTime;
 		m_UpdatePath = false;
-		std::cout << "New Path Calculated" << std::endl;
+		std::cout << "New Path Calculated in " << elapsedTime.count() << " seconds" << std::endl;
 	}
 }
 
@@ -116,7 +124,7 @@ void App_Pathfinding::Render(float deltaTime) const
 		m_bDrawConnections, 
 		m_bDrawConnectionsCosts
 	);
-	
+
 	//Render start node on top if applicable
 	if (startPathIdx != invalid_node_index)
 	{
@@ -133,6 +141,17 @@ void App_Pathfinding::Render(float deltaTime) const
 	if (m_vPath.size() > 0)
 	{
 		m_GraphRenderer.RenderHighlightedGrid(m_pGridGraph, m_vPath);
+	}
+
+	//render the open and closed list
+	if (m_OpenList.size() > 0)
+	{
+		m_GraphRenderer.RenderRectangularGridPart(m_pGridGraph, m_OpenList, Elite::Color(1.f, 1.f, 0.f, 0.5f));
+	}
+
+	if (m_ClosedList.size() > 0)
+	{
+		m_GraphRenderer.RenderRectangularGridPart(m_pGridGraph, m_ClosedList, Elite::Color(1.f, 0.f, 1.f, 0.5f));
 	}
 }
 

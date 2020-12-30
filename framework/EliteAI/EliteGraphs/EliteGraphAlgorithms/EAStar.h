@@ -30,7 +30,7 @@ namespace Elite
 			};
 		};
 
-		std::vector<T_NodeType*> FindPath(T_NodeType* pStartNode, T_NodeType* pDestinationNode);
+		std::vector<T_NodeType*> FindPath(T_NodeType* pStartNode, T_NodeType* pDestinationNode, std::vector<T_NodeType*>& openListRender, std::vector<T_NodeType*>& closedListRender);
 
 	private:
 		float GetHeuristicCost(T_NodeType* pStartNode, T_NodeType* pEndNode) const;
@@ -46,8 +46,8 @@ namespace Elite
 	{
 	}
 
-	template <class T_NodeType, class T_ConnectionType>
-	std::vector<T_NodeType*> AStar<T_NodeType, T_ConnectionType>::FindPath(T_NodeType* pStartNode, T_NodeType* pGoalNode)
+	template<class T_NodeType, class T_ConnectionType>
+	inline std::vector<T_NodeType*> AStar<T_NodeType, T_ConnectionType>::FindPath(T_NodeType* pStartNode, T_NodeType* pDestinationNode, std::vector<T_NodeType*>& openListRender, std::vector<T_NodeType*>& closedListRender)
 	{
 		//Here we will calculate our path using AStar
 		bool foundPath{ false };
@@ -58,7 +58,7 @@ namespace Elite
 		NodeRecord startRecord{};
 		startRecord.pNode = pStartNode;
 		startRecord.pConnection = nullptr;
-		startRecord.estimatedTotalCost = GetHeuristicCost(pStartNode, pGoalNode);
+		startRecord.estimatedTotalCost = GetHeuristicCost(pStartNode, pDestinationNode);
 		openList.push_back(startRecord);
 
 		while (!openList.empty())
@@ -66,7 +66,7 @@ namespace Elite
 			std::sort(openList.begin(), openList.end());
 			currentRecord = openList.front();
 
-			if (currentRecord.pNode == pGoalNode)
+			if (currentRecord.pNode == pDestinationNode)
 			{
 				foundPath = true;
 				break;
@@ -130,11 +130,13 @@ namespace Elite
 				newNode.pNode = neighbor;
 				newNode.pConnection = currentConnection;
 				newNode.costSoFar = costSoFar;
-				newNode.estimatedTotalCost = newNode.costSoFar + GetHeuristicCost(newNode.pNode, pGoalNode);
+				newNode.estimatedTotalCost = newNode.costSoFar + GetHeuristicCost(newNode.pNode, pDestinationNode);
 				openList.push_back(newNode);
+				openListRender.push_back(neighbor);
 			}
 
 			closedList.push_back(currentRecord);
+			closedListRender.push_back(currentRecord.pNode);
 			openList.erase(openList.begin());
 		}
 
@@ -145,8 +147,8 @@ namespace Elite
 			for (std::vector<NodeRecord>::iterator it{ closedList.begin() }; it != closedList.end();)
 			{
 				NodeRecord& recordIterator = *it;
-				float costNodeToGoal = GetHeuristicCost(recordIterator.pNode, pGoalNode);
-				if (costNodeToGoal < lowestCost && recordIterator.pNode != pGoalNode)
+				float costNodeToGoal = GetHeuristicCost(recordIterator.pNode, pDestinationNode);
+				if (costNodeToGoal < lowestCost && recordIterator.pNode != pDestinationNode)
 				{
 					lowestCost = costNodeToGoal;
 					nearestNodeToEnd = recordIterator;

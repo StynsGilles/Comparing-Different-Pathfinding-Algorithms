@@ -8,7 +8,7 @@ namespace Elite
 	public:
 		BFS(IGraph<T_NodeType, T_ConnectionType>* pGraph, Heuristic hFunction);
 
-		std::vector<T_NodeType*> FindPath(T_NodeType* pStartNode, T_NodeType* pDestinationNode);
+		std::vector<T_NodeType*> FindPath(T_NodeType* pStartNode, T_NodeType* pDestinationNode, std::vector<T_NodeType*>& openListRender, std::vector<T_NodeType*>& closedListRender);
 	private:
 		float GetHeuristicCost(T_NodeType* pStartNode, T_NodeType* pEndNode) const;
 
@@ -23,8 +23,8 @@ namespace Elite
 	{
 	}
 
-	template <class T_NodeType, class T_ConnectionType>
-	std::vector<T_NodeType*> BFS<T_NodeType, T_ConnectionType>::FindPath(T_NodeType* pStartNode, T_NodeType* pDestinationNode)
+	template<class T_NodeType, class T_ConnectionType>
+	inline std::vector<T_NodeType*> BFS<T_NodeType, T_ConnectionType>::FindPath(T_NodeType* pStartNode, T_NodeType* pDestinationNode, std::vector<T_NodeType*>& openListRender, std::vector<T_NodeType*>& closedListRender)
 	{
 		//Here we will calculate our path using BFS
 		bool foundPath{ false };
@@ -33,7 +33,6 @@ namespace Elite
 
 		openList.push(pStartNode);
 
-		std::cout << "getting nodes from the open list" << std::endl;
 		while (!openList.empty() && !foundPath)
 		{
 			T_NodeType* currentNode = openList.front();
@@ -51,12 +50,13 @@ namespace Elite
 				if (closedList.find(nextNode) == closedList.end())
 				{
 					openList.push(nextNode);
+					openListRender.push_back(nextNode);
 					closedList[nextNode] = currentNode;
+					closedListRender.push_back(currentNode);
 				}
 			}
 		}
 
-		std::cout << "tracking back" << std::endl;
 		//Track back
 		vector<T_NodeType*> path;
 
