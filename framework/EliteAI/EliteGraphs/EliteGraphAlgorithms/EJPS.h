@@ -268,13 +268,13 @@ namespace Elite
 				prunedNeighbors.push_back(neighBorRecord);
 				continue;
 			}
-
 			float costToNeighbor{ currentRecord.pConnection->GetCost() + currentConnection->GetCost() };
-
 			//diagonal movement
 			if (orientationVectorParent.x != 0 && orientationVectorParent.y != 0)
 			{
-				if (GetCostNoCurrentRecord(m_pGraph->GetNodeConnections(currentRecord.pNode->GetIndex()), neighbor, parent) < costToNeighbor)
+				float costToNeighborNoCurrentRecord{ GetCostNoCurrentRecord(m_pGraph->GetNodeConnections(currentRecord.pNode->GetIndex()), neighbor, parent) };
+				if (costToNeighborNoCurrentRecord < costToNeighbor &&
+					costToNeighborNoCurrentRecord > 0.f)
 				{
 					continue;
 				}
@@ -289,7 +289,9 @@ namespace Elite
 			//horizontal and vertical movement
 			else
 			{
-				if (GetCostNoCurrentRecord(m_pGraph->GetNodeConnections(currentRecord.pNode->GetIndex()), neighbor, parent) <= costToNeighbor)
+				float costToNeighborNoCurrentRecord{ GetCostNoCurrentRecord(m_pGraph->GetNodeConnections(currentRecord.pNode->GetIndex()), neighbor, parent) };
+				if (costToNeighborNoCurrentRecord <= costToNeighbor&&
+					costToNeighborNoCurrentRecord > 0.f)
 				{
 					continue;
 				}
@@ -365,6 +367,10 @@ namespace Elite
 		}
 		
 		auto connection = m_pGraph->GetConnection(currentRecord.pNode->GetIndex(), nextNodeIdx);
+		if (connection == nullptr)
+		{
+			return nullptr;
+		}
 		NodeRecord nextNode;
 		nextNode.pNode = m_pGraph->GetNode(nextNodeIdx);
 
@@ -480,7 +486,6 @@ namespace Elite
 				}
 			}
 		}
-
 		costSoFar += connection->GetCost();
 		return Jump(nextNode, direction, pStartNode, pEndNode, costSoFar);
 	}
