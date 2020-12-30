@@ -34,6 +34,7 @@ namespace Elite
 		std::vector<T_NodeType*> FindPath(T_NodeType* pStartNode, T_NodeType* pDestinationNode, std::vector<T_NodeType*>& openListRender, std::vector<T_NodeType*>& closedListRender);
 
 	private:
+		void GetNearestNodeToEnd(NodeRecord& nearestNodeToEnd, vector<NodeRecord>& closedList, T_NodeType* pDestinationNode) const;
 		void IdentifySuccessors(NodeRecord currentRecord, T_NodeType* pStartNode, T_NodeType* pDestinationNode, std::vector<NodeRecord>& successors);
 		void PruneNeighbors(NodeRecord currentRecord, std::vector<NodeRecord>& prunedNeighbors, T_NodeType* pDestinationNode);
 		float GetCostNoCurrentRecord(std::list<T_ConnectionType*> connections, T_NodeType* neighbor, T_NodeType* parent) const;
@@ -96,13 +97,13 @@ namespace Elite
 			{
 				float costSoFar = successor.costSoFar;
 				bool cheaperFound{ false };
-				//find the current record in the closed list
+				//find the successor in the closed list
 				for (std::vector<NodeRecord>::iterator it{ closedList.begin() }; it != closedList.end();)
 				{
 					NodeRecord& recordIterator = *it;
 					if (successor.pNode == recordIterator.pNode)
 					{
-						//switch the record in the closed list out with the current record if this record is cheaper
+						//switch the record in the closed list out with the successor if this record is cheaper
 						if (recordIterator.costSoFar > costSoFar)
 						{
 							std::iter_swap(it, closedList.end() - 1);
@@ -124,13 +125,13 @@ namespace Elite
 					continue;
 				}
 				cheaperFound = false;
-				//find the current record in the closed list
+				//find the successor in the closed list
 				for (std::vector<NodeRecord>::iterator it{ openList.begin() }; it != openList.end();)
 				{
 					NodeRecord& recordIterator = *it;
 					if (successor.pNode == recordIterator.pNode)
 					{
-						//switch the record in the open list out with the current record if this record is cheaper
+						//switch the record in the open list out with the successor if this record is cheaper
 						if (recordIterator.costSoFar > costSoFar)
 						{
 							std::iter_swap(it, openList.end() - 1);
@@ -151,7 +152,7 @@ namespace Elite
 				{
 					continue;
 				}
-				//add the current successor to the open list if it doesn't exist yet
+				//add the successor to the open list if it doesn't exist yet
 				NodeRecord newNode{};
 				newNode.pNode = successor.pNode;
 				newNode.pNodeJumpedFrom = successor.pNodeJumpedFrom;
@@ -167,26 +168,13 @@ namespace Elite
 			openList.erase(openList.begin());
 		}
 
-		//if there is no path possible, create a path to the node closest to the destination node
+		//if there is no path possible, set the current record to the nearest node to the end
 		if (!foundPath)
 		{
-			float lowestCost{ FLT_MAX };
-			NodeRecord nearestNodeToEnd{};
-			for (std::vector<NodeRecord>::iterator it{ closedList.begin() }; it != closedList.end();)
-			{
-				NodeRecord& recordIterator = *it;
-				float costNodeToGoal = GetHeuristicCost(recordIterator.pNode, pDestinationNode);
-				if (costNodeToGoal < lowestCost && recordIterator.pNode != pDestinationNode)
-				{
-					lowestCost = costNodeToGoal;
-					nearestNodeToEnd = recordIterator;
-				}
-				++it;
-			}
-			currentRecord = nearestNodeToEnd;
+			GetNearestNodeToEnd(currentRecord, closedList, pDestinationNode);
 		}
 
-		//if there is a path found, loop over the closed list and create a path to the destination node
+		//loop over the closed list and create a path to the current node
 		while (currentRecord.pNode != pStartNode)
 		{
 			finalPath.push_back(currentRecord.pNode);
@@ -207,6 +195,31 @@ namespace Elite
 		std::reverse(finalPath.begin(), finalPath.end());
 
 		return finalPath;
+	}
+
+	/// <summary>
+	/// Find the node closest to the destination node on the closed list
+	/// </summary>
+	/// <typeparam name="T_NodeType">The type of node used on the graph</typeparam>
+	/// <typeparam name="T_ConnectionType"><The type of connection used on the graph/typeparam>
+	/// <param name="nearestNodeToEnd">noderecord to put the closest node into</param>
+	/// <param name="closedList">closedlist to loop over</param>
+	/// <param name="pDestinationNode">destination node of the path</param>
+	template<class T_NodeType, class T_ConnectionType>
+	inline void JPS<T_NodeType, T_ConnectionType>::GetNearestNodeToEnd(NodeRecord& nearestNodeToEnd, vector<NodeRecord>& closedList, T_NodeType* pDestinationNode) const
+	{
+		float lowestCost{ FLT_MAX };
+		for (vector<NodeRecord>::iterator it{ closedList.begin() }; it != closedList.end();)
+		{
+			NodeRecord& recordIterator = *it;
+			float costNodeToGoal = GetHeuristicCost(recordIterator.pNode, pDestinationNode);
+			if (costNodeToGoal < lowestCost && recordIterator.pNode != pDestinationNode)
+			{
+				lowestCost = costNodeToGoal;
+				nearestNodeToEnd = recordIterator;
+			}
+			++it;
+		}
 	}
 
 	/// <summary>
@@ -412,13 +425,13 @@ namespace Elite
 	}
 
 	/// <summary>
-	/// 
+	/// Get the cost between 2 nodes on the graph using the heuristic function
 	/// </summary>
 	/// <typeparam name="T_NodeType">The type of node used on the graph</typeparam>
 	/// <typeparam name="T_ConnectionType"><The type of connection used on the graph/typeparam>
-	/// <param name="pStartNode"></param>
-	/// <param name="pEndNode"></param>
-	/// <returns></returns>
+	/// <param name="pStartNode">the start node</param>
+	/// <param name="pEndNode">the endnode</param>
+	/// <returns>the cost between these nodes</returns>
 	template<class T_NodeType, class T_ConnectionType>
 	inline float JPS<T_NodeType, T_ConnectionType>::GetHeuristicCost(T_NodeType* pStartNode, T_NodeType* pEndNode) const
 	{

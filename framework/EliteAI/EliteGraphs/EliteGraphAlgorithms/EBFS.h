@@ -23,6 +23,16 @@ namespace Elite
 	{
 	}
 
+	/// <summary>
+	/// find a path from 2 given nodes on the graph
+	/// </summary>
+	/// <typeparam name="T_NodeType">The type of node used on the graph</typeparam>
+	/// <typeparam name="T_ConnectionType"><The type of connection used on the graph/typeparam>
+	/// <param name="pStartNode">The start node we want to find a path FROM</param>
+	/// <param name="pDestinationNode">The destination node we want to find a path TO</param>
+	/// <param name="openListRender">vector of nodes that gets filled up to visualize the open list in the renderer</param>
+	/// <param name="closedListRender">vector of nodes that gets filled up to visualize the closed list in the renderer</param>
+	/// <returns>returns the path between the 2 nodes</returns>
 	template<class T_NodeType, class T_ConnectionType>
 	inline std::vector<T_NodeType*> BFS<T_NodeType, T_ConnectionType>::FindPath(T_NodeType* pStartNode, T_NodeType* pDestinationNode, std::vector<T_NodeType*>& openListRender, std::vector<T_NodeType*>& closedListRender)
 	{
@@ -81,6 +91,15 @@ namespace Elite
 
 		return path;
 	}
+
+	/// <summary>
+	/// Get the cost between 2 nodes on the graph using the heuristic function
+	/// </summary>
+	/// <typeparam name="T_NodeType">The type of node used on the graph</typeparam>
+	/// <typeparam name="T_ConnectionType"><The type of connection used on the graph/typeparam>
+	/// <param name="pStartNode">the start node</param>
+	/// <param name="pEndNode">the endnode</param>
+	/// <returns>the cost between these nodes</returns>
 	template<class T_NodeType, class T_ConnectionType>
 	inline float BFS<T_NodeType, T_ConnectionType>::GetHeuristicCost(T_NodeType* pStartNode, T_NodeType* pEndNode) const
 	{
