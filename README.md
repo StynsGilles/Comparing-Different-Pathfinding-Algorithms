@@ -6,3 +6,11 @@
 * Breadth First Search (BFS)
 * A Star (A*)
 * Jump Point Search (JPS)
+
+BFS and A* I had to implement during my classes Gameplay programming, so this research will mostly be focusing on the implementation of JPS.
+
+## Implementation
+
+As part of our classes, we got an example application that loads a grid with nodes and connections between these nodes for us. The hands on for this application was the programming of the BFS algorithm. This algorithm first searches all the neighbors of the starting node, then continues to all the neighbors of these neighbors, and so on until it finds a clear shortest path from the start to the end node. This algorithm is slow, but it guarantees the shortest path.
+
+![Image example of BSF](https://i.imgur.com/3xqAk8u.png)
