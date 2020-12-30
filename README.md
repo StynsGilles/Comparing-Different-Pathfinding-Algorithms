@@ -32,4 +32,8 @@ The hands on for this application was the programming of the BFS algorithm. This
 
 ### A Star
 
-The exercise for this application was for me to implement the A star algorithm. 
+The exercise for this application was for me to implement the A star algorithm. This algorithm is a **Best-first search** algorithm. This means that every time it goes over all possible paths, it will only extend the paths that are most likely to be the most optimal routes to the goal node. This algorithm is fast and is very commonly used in video games, for example Age of Empires. 
+
+![Image example of A*](https://i.imgur.com/aYjdJVt.png)
+
+### Jump Point Search
