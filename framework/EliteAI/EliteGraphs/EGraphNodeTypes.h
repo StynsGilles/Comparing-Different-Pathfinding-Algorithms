@@ -49,7 +49,7 @@ namespace Elite
 		Elite::Color m_Color;
 	};
 
-
+	//turned a gridterrainnode into a graphnode2d, this way I can use the position of the node for JPS
 	class GridTerrainNode : public GraphNode2D
 	{
 	public:

@@ -335,9 +335,12 @@
     <ClInclude Include="framework\EliteAI\EliteGraphs\EliteGraphUtilities\EGraphVisuals.h" />
     <ClInclude Include="framework\EliteAI\EliteNavigation\EHeuristicFunctions.h" />
     <ClInclude Include="framework\EliteAI\EliteNavigation\ENavigation.h" />
-    <ClInclude Include="framework\EliteHelpers\EMulticastDelegate.h" />
+    <ClInclude Include="framework\EliteGeometry\EGeometry.h" />
+    <ClInclude Include="framework\EliteGeometry\EGeometry2DTypes.h" />
+    <ClInclude Include="framework\EliteGeometry\EGeometry2DUtilities.h" />
     <ClInclude Include="framework\EliteHelpers\EMemoryPool.h" />
     <ClInclude Include="framework\EliteHelpers\EMemoryPoolHelpers.h" />
+    <ClInclude Include="framework\EliteHelpers\EMulticastDelegate.h" />
     <ClInclude Include="framework\EliteHelpers\ESingleton.h" />
     <ClInclude Include="framework\EliteInput\EInputData.h" />
     <ClInclude Include="framework\EliteInput\EInputManager.h" />
@@ -356,9 +359,6 @@
     <ClInclude Include="framework\EliteUI\EImmediateUI.h" />
     <ClInclude Include="framework\EliteWindow\EWindow.h" />
     <ClInclude Include="framework\EliteWindow\EWindowBase.h" />
-    <ClInclude Include="framework\EliteGeometry\EGeometry.h" />
-    <ClInclude Include="framework\EliteGeometry\EGeometry2DTypes.h" />
-    <ClInclude Include="framework\EliteGeometry\EGeometry2DUtilities.h" />
     <ClInclude Include="framework\EliteMath\EMat22.h" />
     <ClInclude Include="framework\EliteMath\EMath.h" />
     <ClInclude Include="framework\EliteMath\EMathUtilities.h" />

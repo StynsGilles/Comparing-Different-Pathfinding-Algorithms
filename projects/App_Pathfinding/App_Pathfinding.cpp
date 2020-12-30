@@ -144,14 +144,14 @@ void App_Pathfinding::Render(float deltaTime) const
 	}
 
 	//render the open and closed list
+	if (m_ClosedList.size() > 0)
+	{
+		m_GraphRenderer.RenderRectangularGridPart(m_pGridGraph, m_ClosedList, Elite::Color(1.f, 0.f, 0.f, 0.5f));
+	}
+
 	if (m_OpenList.size() > 0)
 	{
 		m_GraphRenderer.RenderRectangularGridPart(m_pGridGraph, m_OpenList, Elite::Color(1.f, 1.f, 0.f, 0.5f));
-	}
-
-	if (m_ClosedList.size() > 0)
-	{
-		m_GraphRenderer.RenderRectangularGridPart(m_pGridGraph, m_ClosedList, Elite::Color(1.f, 0.f, 1.f, 0.5f));
 	}
 }
 

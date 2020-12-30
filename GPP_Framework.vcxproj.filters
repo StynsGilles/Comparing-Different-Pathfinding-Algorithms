@@ -3,7 +3,6 @@
   <ItemGroup>
     <ClCompile Include="framework\main.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="framework\EliteGeometry\EGeometry2DTypes.cpp" />
     <ClCompile Include="framework\ElitePhysics\Box2DIntegration\ERigidBodyBox2D.cpp" />
     <ClCompile Include="framework\ElitePhysics\Box2DIntegration\EPhysicsWorldBox2D.cpp" />
     <ClCompile Include="framework\EliteWindow\SDLWindow\SDLWindow.cpp" />
@@ -20,6 +19,7 @@
     <ClCompile Include="framework\EliteAI\EliteGraphs\EliteGraphUtilities\EGraphEditor.cpp" />
     <ClCompile Include="framework\EliteAI\EliteGraphs\EliteGraphUtilities\EGraphRenderer.cpp" />
     <ClCompile Include="projects\App_Pathfinding\App_Pathfinding.cpp" />
+    <ClCompile Include="framework\EliteGeometry\EGeometry2DTypes.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="projects\App_Selector.h" />
@@ -35,9 +35,6 @@
     <ClInclude Include="framework\EliteMath\EMathUtilities.h" />
     <ClInclude Include="framework\EliteMath\EVector2.h" />
     <ClInclude Include="framework\EliteMath\EVector3.h" />
-    <ClInclude Include="framework\EliteGeometry\EGeometry2DTypes.h" />
-    <ClInclude Include="framework\EliteGeometry\EGeometry.h" />
-    <ClInclude Include="framework\EliteGeometry\EGeometry2DUtilities.h" />
     <ClInclude Include="framework\ElitePhysics\ERigidBodyBase.h" />
     <ClInclude Include="framework\ElitePhysics\EPhysics.h" />
     <ClInclude Include="framework\ElitePhysics\EPhysicsTypes.h" />
@@ -49,7 +46,6 @@
     <ClInclude Include="framework\EliteInput\EInputManager.h" />
     <ClInclude Include="framework\EliteTimer\ETimer.h" />
     <ClInclude Include="framework\EliteInput\EInputCodes.h" />
-    <ClInclude Include="framework\EliteHelpers\ESingleton.h" />
     <ClInclude Include="framework\EliteRendering\EFrameBase.h" />
     <ClInclude Include="framework\EliteRendering\ERendering.h" />
     <ClInclude Include="framework\EliteRendering\ERenderingTypes.h" />
@@ -60,10 +56,7 @@
     <ClInclude Include="framework\EliteRendering\EDebugRenderer2D.h" />
     <ClInclude Include="framework\EliteRendering\SDLIntegration\SDLDebugRenderer2D\SDLDebugRenderer2D.h" />
     <ClInclude Include="framework\EliteInterfaces\EIApp.h" />
-    <ClInclude Include="framework\EliteHelpers\EMemoryPool.h" />
-    <ClInclude Include="framework\EliteHelpers\EMemoryPoolHelpers.h" />
     <ClInclude Include="framework\ElitePhysics\Box2DIntegration\Box2DRenderer.h" />
-    <ClInclude Include="framework\EliteHelpers\EMulticastDelegate.h" />
     <ClInclude Include="framework\EliteUI\EImmediateUI.h" />
     <ClInclude Include="framework\EliteRendering\Shaders.h" />
     <ClInclude Include="framework\EliteInput\EInputData.h" />
@@ -83,6 +76,13 @@
     <ClInclude Include="framework\EliteAI\EliteNavigation\ENavigation.h" />
     <ClInclude Include="framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EJPS.h" />
     <ClInclude Include="projects\App_Pathfinding\App_Pathfinding.h" />
+    <ClInclude Include="framework\EliteGeometry\EGeometry.h" />
+    <ClInclude Include="framework\EliteGeometry\EGeometry2DTypes.h" />
+    <ClInclude Include="framework\EliteGeometry\EGeometry2DUtilities.h" />
+    <ClInclude Include="framework\EliteHelpers\EMemoryPool.h" />
+    <ClInclude Include="framework\EliteHelpers\EMemoryPoolHelpers.h" />
+    <ClInclude Include="framework\EliteHelpers\EMulticastDelegate.h" />
+    <ClInclude Include="framework\EliteHelpers\ESingleton.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />

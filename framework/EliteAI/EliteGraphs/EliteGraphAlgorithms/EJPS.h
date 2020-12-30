@@ -34,11 +34,11 @@ namespace Elite
 		std::vector<T_NodeType*> FindPath(T_NodeType* pStartNode, T_NodeType* pDestinationNode, std::vector<T_NodeType*>& openListRender, std::vector<T_NodeType*>& closedListRender);
 
 	private:
-		void IdentifySuccessors(NodeRecord currentRecord, T_NodeType* pStartNode, T_NodeType* pEndNode, std::vector<NodeRecord>& successors);
-		void PruneNeighbors(NodeRecord currentRecord, std::vector<NodeRecord>& prunedNeighbors, T_NodeType* pGoalNode);
+		void IdentifySuccessors(NodeRecord currentRecord, T_NodeType* pStartNode, T_NodeType* pDestinationNode, std::vector<NodeRecord>& successors);
+		void PruneNeighbors(NodeRecord currentRecord, std::vector<NodeRecord>& prunedNeighbors, T_NodeType* pDestinationNode);
 		float GetCostNoCurrentRecord(std::list<T_ConnectionType*> connections, T_NodeType* neighbor, T_NodeType* parent) const;
-		float GetHeuristicCost(T_NodeType* pStartNode, T_NodeType* pEndNode) const;
-		T_NodeType* Jump(NodeRecord currentRecord, Elite::Vector2 direction, T_NodeType* pStartNode, T_NodeType* pEndNode, float& costSoFar);
+		float GetHeuristicCost(T_NodeType* pStartNode, T_NodeType* pDestinationNode) const;
+		T_NodeType* Jump(NodeRecord currentRecord, Elite::Vector2 direction, T_NodeType* pStartNode, T_NodeType* pDestinationNode, float& costSoFar);
 
 		GridGraph<T_NodeType, T_ConnectionType>* m_pGraph;
 		Heuristic m_HeuristicFunction;
@@ -51,6 +51,16 @@ namespace Elite
 	{
 	}
 
+	/// <summary>
+	/// find a path from 2 given nodes on the graph
+	/// </summary>
+	/// <typeparam name="T_NodeType">The type of node used on the graph</typeparam>
+	/// <typeparam name="T_ConnectionType"><The type of connection used on the graph/typeparam>
+	/// <param name="pStartNode">The start node we want to find a path FROM</param>
+	/// <param name="pDestinationNode">The destination node we want to find a path TO</param>
+	/// <param name="openListRender">vector of nodes that gets filled up to visualize the open list in the renderer</param>
+	/// <param name="closedListRender">vector of nodes that gets filled up to visualize the closed list in the renderer</param>
+	/// <returns>returns the path between the 2 nodes</returns>
 	template<class T_NodeType, class T_ConnectionType>
 	inline std::vector<T_NodeType*> JPS<T_NodeType, T_ConnectionType>::FindPath(T_NodeType* pStartNode, T_NodeType* pDestinationNode, std::vector<T_NodeType*>& openListRender, std::vector<T_NodeType*>& closedListRender)
 	{
@@ -68,26 +78,31 @@ namespace Elite
 
 		while (!openList.empty())
 		{
+			//sort the openlist by estimated total cost, then set the currentrecord to the first one(lowest cost)
 			std::sort(openList.begin(), openList.end());
 			currentRecord = openList.front();
 
+			// if the currentrecord is the goal node we no longer have to keep searching for a path, so we can stop this while loop
 			if (currentRecord.pNode == pDestinationNode)
 			{
 				foundPath = true;
 				break;
 			}
 
+			//find all successors to jump to and loop over them
 			std::vector<NodeRecord> successors;
 			IdentifySuccessors(currentRecord, pStartNode, pDestinationNode, successors);
 			for (auto successor : successors)
 			{
 				float costSoFar = successor.costSoFar;
 				bool cheaperFound{ false };
+				//find the current record in the closed list
 				for (std::vector<NodeRecord>::iterator it{ closedList.begin() }; it != closedList.end();)
 				{
 					NodeRecord& recordIterator = *it;
 					if (successor.pNode == recordIterator.pNode)
 					{
+						//switch the record in the closed list out with the current record if this record is cheaper
 						if (recordIterator.costSoFar > costSoFar)
 						{
 							std::iter_swap(it, closedList.end() - 1);
@@ -103,16 +118,19 @@ namespace Elite
 					else
 						++it;
 				}
+				//if there is a cheaper record found in the closed list, continue to the next successor
 				if (cheaperFound)
 				{
 					continue;
 				}
 				cheaperFound = false;
+				//find the current record in the closed list
 				for (std::vector<NodeRecord>::iterator it{ openList.begin() }; it != openList.end();)
 				{
 					NodeRecord& recordIterator = *it;
 					if (successor.pNode == recordIterator.pNode)
 					{
+						//switch the record in the open list out with the current record if this record is cheaper
 						if (recordIterator.costSoFar > costSoFar)
 						{
 							std::iter_swap(it, openList.end() - 1);
@@ -128,10 +146,12 @@ namespace Elite
 					else
 						++it;
 				}
+				//if there is a cheaper record found in the open list, continue to the next successor
 				if (cheaperFound)
 				{
 					continue;
 				}
+				//add the current successor to the open list if it doesn't exist yet
 				NodeRecord newNode{};
 				newNode.pNode = successor.pNode;
 				newNode.pNodeJumpedFrom = successor.pNodeJumpedFrom;
@@ -141,12 +161,13 @@ namespace Elite
 				openList.push_back(newNode);
 				openListRender.push_back(successor.pNode);
 			}
-
+			//add the current record to the closed list and remove it from the open list
 			closedList.push_back(currentRecord);
 			closedListRender.push_back(currentRecord.pNode);
 			openList.erase(openList.begin());
 		}
 
+		//if there is no path possible, create a path to the node closest to the destination node
 		if (!foundPath)
 		{
 			float lowestCost{ FLT_MAX };
@@ -165,6 +186,7 @@ namespace Elite
 			currentRecord = nearestNodeToEnd;
 		}
 
+		//if there is a path found, loop over the closed list and create a path to the destination node
 		while (currentRecord.pNode != pStartNode)
 		{
 			finalPath.push_back(currentRecord.pNode);
@@ -180,27 +202,42 @@ namespace Elite
 					++it;
 			}
 		}
+		//add the start node to the finalpath and reverse the path (nodes got added in reverse order)
 		finalPath.push_back(pStartNode);
 		std::reverse(finalPath.begin(), finalPath.end());
 
 		return finalPath;
 	}
 
+	/// <summary>
+	/// find the potential successors of the current record
+	/// </summary>
+	/// <typeparam name="T_NodeType">The type of node used on the graph</typeparam>
+	/// <typeparam name="T_ConnectionType"><The type of connection used on the graph/typeparam>
+	/// <param name="currentRecord">the record we want to get the successors of</param>
+	/// <param name="pStartNode">The start node on the graph</param>
+	/// <param name="pDestinationNode">The end node on the graph</param>
+	/// <param name="successors">returns the successors of the current record</param>
 	template<class T_NodeType, class T_ConnectionType>
-	inline void JPS<T_NodeType, T_ConnectionType>::IdentifySuccessors(NodeRecord currentRecord, T_NodeType* pStartNode, T_NodeType* pEndNode, std::vector<NodeRecord>& successors)
+	inline void JPS<T_NodeType, T_ConnectionType>::IdentifySuccessors(NodeRecord currentRecord, T_NodeType* pStartNode, T_NodeType* pDestinationNode, std::vector<NodeRecord>& successors)
 	{
+		//Get all relevant neighbors of the current record
 		std::vector<NodeRecord> neighbors;
-		PruneNeighbors(currentRecord, neighbors, pEndNode);
+		PruneNeighbors(currentRecord, neighbors, pDestinationNode);
 
+		//loop over the neighbors
 		for (auto neighbor : neighbors)
 		{
 			float costSoFar = currentRecord.costSoFar;
 
+			//Direction the neighbor is in relation with the current record
 			float directionX{ m_pGraph->GetNodePos(neighbor.pNode).x - m_pGraph->GetNodePos(currentRecord.pNode).x };
 			float directionY{ m_pGraph->GetNodePos(neighbor.pNode).y - m_pGraph->GetNodePos(currentRecord.pNode).y };
 			Elite::Vector2 directionVector{ directionX, directionY };
 		
-			T_NodeType* jumpNode = Jump(currentRecord, directionVector, pStartNode, pEndNode, costSoFar);
+			//Jump in the direction of this neighbor until we can't find a node anymore to find the jump point
+			T_NodeType* jumpNode = Jump(currentRecord, directionVector, pStartNode, pDestinationNode, costSoFar);
+			//if there is a jump node found, add it to the successors
 			if (jumpNode)
 			{
 				Elite::Vector2 previousNodePos{ jumpNode->GetPosition() - directionVector };
@@ -217,9 +254,18 @@ namespace Elite
 		}
 	}
 
+	/// <summary>
+	/// Prune the neighbors to only get the ones relevant for the jump point search algorithm
+	/// </summary>
+	/// <typeparam name="T_NodeType">The type of node used on the graph</typeparam>
+	/// <typeparam name="T_ConnectionType"><The type of connection used on the graph/typeparam>
+	/// <param name="currentRecord">The record of which the neighbors get evaluated</param>
+	/// <param name="prunedNeighbors">The vector where the neighbors get added to</param>
+	/// <param name="pDestinationNode">The destination node on the graph that we want to get to</param>
 	template<class T_NodeType, class T_ConnectionType>
-	inline void JPS<T_NodeType, T_ConnectionType>::PruneNeighbors(NodeRecord currentRecord, std::vector<NodeRecord>& prunedNeighbors, T_NodeType* pGoalNode)
+	inline void JPS<T_NodeType, T_ConnectionType>::PruneNeighbors(NodeRecord currentRecord, std::vector<NodeRecord>& prunedNeighbors, T_NodeType* pDestinationNode)
 	{
+		//if the current record has no connection to a parent (the start node), add all his neighbors to the vector
 		if (currentRecord.pConnection== nullptr)
 		{
 			for (auto currentConnection : m_pGraph->GetNodeConnections(currentRecord.pNode->GetIndex()))
@@ -229,16 +275,18 @@ namespace Elite
 				neighBorRecord.pNode = neighbor;
 				neighBorRecord.pConnection = currentConnection;
 				neighBorRecord.costSoFar = currentRecord.costSoFar + currentConnection->GetCost();
-				neighBorRecord.estimatedTotalCost = neighBorRecord.costSoFar + GetHeuristicCost(neighBorRecord.pNode, pGoalNode);
+				neighBorRecord.estimatedTotalCost = neighBorRecord.costSoFar + GetHeuristicCost(neighBorRecord.pNode, pDestinationNode);
 				prunedNeighbors.push_back(neighBorRecord);
 			}
 			return;
 		}
+		//get the parent of the record to find the direction it's in relation with this record
 		int parentIndex{ currentRecord.pConnection->GetFrom() };
 		auto parent = m_pGraph->GetNode(parentIndex);
 		auto parentConnections = m_pGraph->GetNodeConnections(parent->GetIndex());
 		Elite::Vector2 orientationVectorParent{ Clamp(m_pGraph->GetNodePos(currentRecord.pNode).x - m_pGraph->GetNodePos(parent).x  , -1.f, 1.f) ,
 												Clamp(m_pGraph->GetNodePos(currentRecord.pNode).y - m_pGraph->GetNodePos(parent).y  , -1.f, 1.f) };
+		//loop over all connections of the record
 		for (auto currentConnection : m_pGraph->GetNodeConnections(currentRecord.pNode->GetIndex()))
 		{
 			auto neighbor = m_pGraph->GetNode(currentConnection->GetTo());
@@ -257,7 +305,7 @@ namespace Elite
 				continue;
 			}
 
-			//if the current evalued neighbor is in the same direction as the record is from the parent, add it to the pruned neighbors
+			//if the currently evalued neighbor is in the same direction as the record is from the parent, add it to the pruned neighbors
 			Elite::Vector2 orientationVectorNeighbor{ Clamp(m_pGraph->GetNodePos(neighbor).x - m_pGraph->GetNodePos(currentRecord.pNode).x, -1.f, 1.f) ,
 													  Clamp(m_pGraph->GetNodePos(neighbor).y - m_pGraph->GetNodePos(currentRecord.pNode).y, -1.f, 1.f) };
 			if (orientationVectorNeighbor == orientationVectorParent)
@@ -266,7 +314,7 @@ namespace Elite
 				neighBorRecord.pNode = neighbor;
 				neighBorRecord.pConnection = currentConnection;
 				neighBorRecord.costSoFar = currentRecord.costSoFar + currentConnection->GetCost();
-				neighBorRecord.estimatedTotalCost = neighBorRecord.costSoFar + GetHeuristicCost(neighBorRecord.pNode, pGoalNode);
+				neighBorRecord.estimatedTotalCost = neighBorRecord.costSoFar + GetHeuristicCost(neighBorRecord.pNode, pDestinationNode);
 				prunedNeighbors.push_back(neighBorRecord);
 				continue;
 			}
@@ -274,9 +322,10 @@ namespace Elite
 			//diagonal movement
 			if (orientationVectorParent.x != 0 && orientationVectorParent.y != 0)
 			{
+				//if the cost to get to te currently evalued neighbor is (strictly) lower without going through the current record than with, ignore it (prune)
+				//otherwise add it to the neighbors
 				float costToNeighborNoCurrentRecord{ GetCostNoCurrentRecord(m_pGraph->GetNodeConnections(currentRecord.pNode->GetIndex()), neighbor, parent) };
-				if (costToNeighborNoCurrentRecord < costToNeighbor &&
-					costToNeighborNoCurrentRecord > 0.f)
+				if (costToNeighborNoCurrentRecord < costToNeighbor)
 				{
 					continue;
 				}
@@ -284,16 +333,17 @@ namespace Elite
 				neighBorRecord.pNode = neighbor;
 				neighBorRecord.pConnection = currentConnection;
 				neighBorRecord.costSoFar = currentRecord.costSoFar + currentConnection->GetCost();
-				neighBorRecord.estimatedTotalCost = neighBorRecord.costSoFar + GetHeuristicCost(neighBorRecord.pNode, pGoalNode);
+				neighBorRecord.estimatedTotalCost = neighBorRecord.costSoFar + GetHeuristicCost(neighBorRecord.pNode, pDestinationNode);
 				prunedNeighbors.push_back(neighBorRecord);
 				continue;
 			}
 			//horizontal and vertical movement
 			else
 			{
+				//if the cost to get to te currently evalued neighbor is lower or equal without going through the current record than with, ignore it (prune)
+				//otherwise add it to the neighbors
 				float costToNeighborNoCurrentRecord{ GetCostNoCurrentRecord(m_pGraph->GetNodeConnections(currentRecord.pNode->GetIndex()), neighbor, parent) };
-				if (costToNeighborNoCurrentRecord <= costToNeighbor&&
-					costToNeighborNoCurrentRecord > 0.f)
+				if (costToNeighborNoCurrentRecord <= costToNeighbor)
 				{
 					continue;
 				}
@@ -301,7 +351,7 @@ namespace Elite
 				neighBorRecord.pNode = neighbor;
 				neighBorRecord.pConnection = currentConnection;
 				neighBorRecord.costSoFar = currentRecord.costSoFar + currentConnection->GetCost();
-				neighBorRecord.estimatedTotalCost = neighBorRecord.costSoFar + GetHeuristicCost(neighBorRecord.pNode, pGoalNode);
+				neighBorRecord.estimatedTotalCost = neighBorRecord.costSoFar + GetHeuristicCost(neighBorRecord.pNode, pDestinationNode);
 				prunedNeighbors.push_back(neighBorRecord);
 				continue;
 			}
@@ -311,14 +361,24 @@ namespace Elite
 			neighBorRecord.pNode = neighbor;
 			neighBorRecord.pConnection = currentConnection;
 			neighBorRecord.costSoFar = currentRecord.costSoFar + currentConnection->GetCost();
-			neighBorRecord.estimatedTotalCost = neighBorRecord.costSoFar + GetHeuristicCost(neighBorRecord.pNode, pGoalNode);
+			neighBorRecord.estimatedTotalCost = neighBorRecord.costSoFar + GetHeuristicCost(neighBorRecord.pNode, pDestinationNode);
 			prunedNeighbors.push_back(neighBorRecord);
 		}
 	}
 
+	/// <summary>
+	/// Gets the cost to get to a neighbor, without going through the current record
+	/// </summary>
+	/// <typeparam name="T_NodeType">The type of node used on the graph</typeparam>
+	/// <typeparam name="T_ConnectionType"><The type of connection used on the graph/typeparam>
+	/// <param name="connections">all the connections of the current record</param>
+	/// <param name="neighbor">evalued neighbor</param>
+	/// <param name="parent">parent of the current record</param>
+	/// <returns>returns the cost to the neighbor without going through the current record (if possible)</returns>
 	template<class T_NodeType, class T_ConnectionType>
 	inline float JPS<T_NodeType, T_ConnectionType>::GetCostNoCurrentRecord(std::list<T_ConnectionType*> connections, T_NodeType* neighbor, T_NodeType* parent) const
 	{
+		//loop over the connections of the parent
 		for (auto currentConnectionParent : m_pGraph->GetNodeConnections(parent->GetIndex()))
 		{
 			float costToNeighbor{ 0.f };
@@ -347,9 +407,18 @@ namespace Elite
 				}
 			}
 		}
+		//return 0 if there is no possible (low enough) path from the parent to this neighbor
 		return 0.0f;
 	}
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <typeparam name="T_NodeType">The type of node used on the graph</typeparam>
+	/// <typeparam name="T_ConnectionType"><The type of connection used on the graph/typeparam>
+	/// <param name="pStartNode"></param>
+	/// <param name="pEndNode"></param>
+	/// <returns></returns>
 	template<class T_NodeType, class T_ConnectionType>
 	inline float JPS<T_NodeType, T_ConnectionType>::GetHeuristicCost(T_NodeType* pStartNode, T_NodeType* pEndNode) const
 	{
@@ -357,17 +426,30 @@ namespace Elite
 		return m_HeuristicFunction(abs(toDestination.x), abs(toDestination.y));
 	}
 
+	/// <summary>
+	/// Jump in a certain direction until it is no longer possible to continue
+	/// </summary>
+	/// <typeparam name="T_NodeType">The type of node used on the graph</typeparam>
+	/// <typeparam name="T_ConnectionType"><The type of connection used on the graph/typeparam>
+	/// <param name="currentRecord">The record to jump from</param>
+	/// <param name="direction">The direction to jump into</param>
+	/// <param name="pStartNode">The start node of the path to find</param>
+	/// <param name="pEndNode">The destination node of the path to find</param>
+	/// <param name="costSoFar">Cost of the jump</param>
+	/// <returns>The found node to jump to</returns>
 	template<class T_NodeType, class T_ConnectionType>
-	inline T_NodeType* JPS<T_NodeType, T_ConnectionType>::Jump(NodeRecord currentRecord, Elite::Vector2 direction, T_NodeType* pStartNode, T_NodeType* pEndNode, float& costSoFar)
+	inline T_NodeType* JPS<T_NodeType, T_ConnectionType>::Jump(NodeRecord currentRecord, Elite::Vector2 direction, T_NodeType* pStartNode, T_NodeType* pDestinationNode, float& costSoFar)
 	{
 		Elite::Vector2 nextNodePos{ currentRecord.pNode->GetPosition() + direction };
 		auto nextNodePosGraph{ m_pGraph->GetNodeWorldPos(int(nextNodePos.x), int(nextNodePos.y)) };
 		auto nextNodeIdx = m_pGraph->GetNodeFromWorldPos(nextNodePosGraph);
+		//if there is no node to jump to, return nullptr
 		if (nextNodeIdx < 0)
 		{
 			return nullptr;
 		}
 		
+		//if there is a node, but no way to jump to it (no connection), return nullptr
 		auto connection = m_pGraph->GetConnection(currentRecord.pNode->GetIndex(), nextNodeIdx);
 		if (connection == nullptr)
 		{
@@ -376,7 +458,8 @@ namespace Elite
 		NodeRecord nextNode;
 		nextNode.pNode = m_pGraph->GetNode(nextNodeIdx);
 
-		if (nextNode.pNode == pEndNode)
+		//if the node to jump to is the destination node, return it
+		if (nextNode.pNode == pDestinationNode)
 		{
 			return nextNode.pNode;
 		}
@@ -391,11 +474,13 @@ namespace Elite
 			{
 				auto neighbor = m_pGraph->GetNode(connection->GetTo());
 
+				//if the neighbor to check is the original node, go to the next connection
 				if(neighbor == currentRecord.pNode)
 				{
 					continue;
 				}
 
+				//if the neighbor is diagonal, check if it's forced
 				Elite::Vector2 directionToNeighbor{ Clamp(m_pGraph->GetNodePos(neighbor).x - m_pGraph->GetNodePos(nextNode.pNode).x  , -1.f, 1.f) ,
 													Clamp(m_pGraph->GetNodePos(neighbor).y - m_pGraph->GetNodePos(nextNode.pNode).y  , -1.f, 1.f) };
 				if (directionToNeighbor.x != 0 && directionToNeighbor.y != 0)
@@ -409,14 +494,11 @@ namespace Elite
 					}
 					return nextNode.pNode;
 				}
-				else
-				{
-					continue;
-				}
 			}
 
-			if (Jump(nextNode, Elite::Vector2(direction.x, 0.f), pStartNode, pEndNode, costSoFar) != nullptr ||
-				Jump(nextNode, Elite::Vector2(0.f, direction.y), pStartNode, pEndNode, costSoFar) != nullptr)
+			//check for horizontal and vertical forced neighbors
+			if (Jump(nextNode, Elite::Vector2(direction.x, 0.f), pStartNode, pDestinationNode, costSoFar) != nullptr ||
+				Jump(nextNode, Elite::Vector2(0.f, direction.y), pStartNode, pDestinationNode, costSoFar) != nullptr)
 			{
 				return nextNode.pNode;
 			}
@@ -431,11 +513,13 @@ namespace Elite
 				{
 					auto neighbor = m_pGraph->GetNode(connection->GetTo());
 
+					//if the neighbor to check is the original node, go to the next connection
 					if (neighbor == currentRecord.pNode)
 					{
 						continue;
 					}
 
+					//if the neighbor is horizontal, check if it's forced
 					Elite::Vector2 directionToNeighbor{ Clamp(m_pGraph->GetNodePos(neighbor).x - m_pGraph->GetNodePos(nextNode.pNode).x  , -1.f, 1.f) ,
 														Clamp(m_pGraph->GetNodePos(neighbor).y - m_pGraph->GetNodePos(nextNode.pNode).y  , -1.f, 1.f) };
 					if (directionToNeighbor.x != 0 && directionToNeighbor.y == 0)
@@ -449,10 +533,6 @@ namespace Elite
 						}
 						return nextNode.pNode;
 					}
-					else
-					{
-						continue;
-					}
 				}
 			}
 			//vertical direction
@@ -463,11 +543,13 @@ namespace Elite
 				{
 					auto neighbor = m_pGraph->GetNode(connection->GetTo());
 
+					//if the neighbor to check is the original node, go to the next connection
 					if (neighbor == currentRecord.pNode)
 					{
 						continue;
 					}
 
+					//if the neighbor is vertical, check if it's forced
 					Elite::Vector2 directionToNeighbor{ Clamp(m_pGraph->GetNodePos(neighbor).x - m_pGraph->GetNodePos(nextNode.pNode).x  , -1.f, 1.f) ,
 														Clamp(m_pGraph->GetNodePos(neighbor).y - m_pGraph->GetNodePos(nextNode.pNode).y  , -1.f, 1.f) };
 					if (directionToNeighbor.x == 0 && directionToNeighbor.y != 0)
@@ -481,14 +563,11 @@ namespace Elite
 						}
 						return nextNode.pNode;
 					}
-					else
-					{
-						continue;
-					}
 				}
 			}
 		}
+		//increment the cost of the jump with the cost of the current connection and jump to the next node
 		costSoFar += connection->GetCost();
-		return Jump(nextNode, direction, pStartNode, pEndNode, costSoFar);
+		return Jump(nextNode, direction, pStartNode, pDestinationNode, costSoFar);
 	}
 }

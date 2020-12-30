@@ -26,6 +26,7 @@ namespace Elite
 		template<class T_NodeType, class T_ConnectionType>
 		void RenderHighlightedGrid(GridGraph<T_NodeType, T_ConnectionType>* pGraph, std::vector<T_NodeType*> path, Color col = HIGHLIGHTED_NODE_COLOR) const;
 
+		//Added this function to visualize the open and closed list
 		template<class T_NodeType, class T_ConnectionType>
 		void RenderRectangularGridPart(GridGraph<T_NodeType, T_ConnectionType>* pGraph, std::vector<T_NodeType*> path, Color col = HIGHLIGHTED_NODE_COLOR) const;
 
