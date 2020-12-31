@@ -43,7 +43,9 @@ As the focus of this project, I wanted to try and implement JPS myself. This is 
 ![Image example of JPS](https://i.imgur.com/4wKZCJB.png)
 
 To be able to do this jumping, JPS prunes neighbors of the node it goes to to find out if the path to those neighbors are dominated by a different path that does not include the node that's being evaluated.
+
 What this means for diagonal pathing: if there is a path, from the node's parent to the neighbor of this node that we want to check, that is strictly cheaper (in cost) than the path going through this node, then this neighbor should get pruned.
+
 For horizontal pathing:  if there is a path, from the node's parent to the neighbor of this node that we want to check, that is cheaper or equal to the path going through this node, then this neighbor should get pruned.
 
 - Example of how this neighbor pruning works from the paper "Online Graph Pruning for Pathfinding on Grid Maps" by Daniel Harabor and Alban Grastien:
