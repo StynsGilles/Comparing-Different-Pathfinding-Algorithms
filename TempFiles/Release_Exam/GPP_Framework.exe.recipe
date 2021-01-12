@@ -1,7 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
-  <ProjectOutputs>D:\OneDrive - Hogeschool West-Vlaanderen\DAE\Gameplay Programming\framework\GPP_Framework\bin\Release_Exam\GPP_Framework.exe</ProjectOutputs>
-  <ContentFiles></ContentFiles>
-  <SatelliteDlls></SatelliteDlls>
-  <NonRecipeFileRefs></NonRecipeFileRefs>
+  <ProjectOutputs>
+    <ProjectOutput>
+      <FullPath>D:\OneDrive - Hogeschool West-Vlaanderen\DAE\Gameplay Programming\Exam\GPP_Exam_Assignment\2DAE2E_Styns_Gilles_GPP-Exam2020\Source_ResearchTopic\bin\Release_Exam\GPP_Framework.exe</FullPath>
+    </ProjectOutput>
+  </ProjectOutputs>
+  <ContentFiles />
+  <SatelliteDlls />
+  <NonRecipeFileRefs />
 </Project>

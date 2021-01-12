@@ -107,7 +107,7 @@ void App_Pathfinding::Update(float deltaTime)
 			break;
 		}
 		std::chrono::system_clock::time_point endTime = std::chrono::system_clock::now();
-		std::chrono::duration<double> elapsedTime = endTime - startTime;
+		std::chrono::duration<float> elapsedTime = endTime - startTime;
 		m_UpdatePath = false;
 		std::cout << "New Path Calculated in " << elapsedTime.count() << " seconds" << std::endl;
 	}
@@ -247,7 +247,7 @@ void App_Pathfinding::UpdateImGui()
 			}
 		}
 		ImGui::Spacing();
-		if (ImGui::Combo("Algorithm", &m_SelectedAlgorithm, "BFS\0AStar\0JPS", 2))
+		if (ImGui::Combo("Algorithm", &m_SelectedAlgorithm, "BFS\0AStar\0JPS\0None", 3))
 		{
 			switch (m_SelectedAlgorithm)
 			{
@@ -261,7 +261,7 @@ void App_Pathfinding::UpdateImGui()
 				m_SearchAlgorithmUsed = SearchAlgorithmUsed::JumpPoint;
 				break;
 			default:
-				m_SearchAlgorithmUsed = SearchAlgorithmUsed::Star;
+				m_SearchAlgorithmUsed = SearchAlgorithmUsed::None;
 				break;
 			}
 		}

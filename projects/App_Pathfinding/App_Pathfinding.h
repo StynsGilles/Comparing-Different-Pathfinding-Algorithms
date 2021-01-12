@@ -16,7 +16,8 @@ enum class SearchAlgorithmUsed
 {
 	Breath,
 	Star,
-	JumpPoint
+	JumpPoint,
+	None
 };
 
 class App_Pathfinding final : public IApp
@@ -63,8 +64,8 @@ private:
 	bool m_StartSelected = true;
 	int m_SelectedHeuristic = 4;
 	Elite::Heuristic m_pHeuristicFunction = Elite::HeuristicFunctions::Chebyshev;
-	int m_SelectedAlgorithm = 2;
-	SearchAlgorithmUsed  m_SearchAlgorithmUsed = SearchAlgorithmUsed::JumpPoint;
+	int m_SelectedAlgorithm = 3;
+	SearchAlgorithmUsed  m_SearchAlgorithmUsed = SearchAlgorithmUsed::None;
 
 	//Functions
 	void MakeGridGraph();
